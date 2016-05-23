@@ -21,8 +21,9 @@
 
     <style media="screen">
       .video_only{
-        display: block;
+        display: inline-block;
       }
+
     </style>
 
   </head>
@@ -35,12 +36,19 @@
     and Electron <script>document.write(process.versions.electron)</script>.
     <!-- <audio src="media/03.mp3" controls="controls"></audio> -->
 
+重复次数：
+<input type="text" value="2" id="repeat_times"/>
 
-    <div class="alert alert-success" role="alert">well done, you can play the video all the time.</div>
-    <video id="player" width="640"  class="video_only" controls="controls">
-        <source src="media/panda1.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <div class="alert alert-success" role="alert" id="current_sentence"></div>
+
+    <div class="video_only">
+      <button class="btn" id="prev_sentence" style="display:none"><</button>
+        <video id="player" width="640"  controls="controls">
+            <source src="media/panda1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+      <button class="btn" id="next_sentence" style="display:none">></button>
+    </div>
     <ul id="english-list">
       
     </ul>

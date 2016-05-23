@@ -7,8 +7,9 @@ function MediaPlayer(start,end, repeatTimes=1){
 		// var startTime= start;
 		// var endTime= end;
 		var ready=false;
-
-		
+		var rt = $("#repeat_times");
+		// console.log(rt.val());
+		if (rt) { repeatTimes= rt.val()};
 		// let player=vid;
 		if (start > end) { throw new Error("start should less than end.")};
 
