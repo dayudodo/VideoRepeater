@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+
+
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- 可选的Bootstrap主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+    <script type="application/javascript">
+        if (typeof module === 'object' && typeof module.exports !== 'undefined') {
+            window.$ = window.jQuery = module.exports;
+        }
+    </script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <style media="screen">
+      .video_only{
+        display: block;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <h2>二级标题小意思</h2>
+    <!-- All of the Node.js APIs are available in this renderer process. -->
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+    <!-- <audio src="media/03.mp3" controls="controls"></audio> -->
+
+
+    <div class="alert alert-success" role="alert">well done, you can play the video all the time.</div>
+    <video id="player" width="640"  class="video_only" controls="controls">
+        <source src="media/panda1.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <ul id="english-list">
+      
+    </ul>
+
+
+  </body>
+
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+    vid= document.getElementById('player')
+  </script>
+  <script type="text/javascript" src="myMediaPlayer.js"></script>
+  <script type="text/javascript" src="srt-reader.js"></script>
+
+</html>
