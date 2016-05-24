@@ -5,6 +5,7 @@
     <title>Hello World!</title>
 
 
+    <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
 
     <!-- 可选的Bootstrap主题文件（一般不用引入） -->
@@ -19,42 +20,35 @@
     </script>
     <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
-    <style media="screen">
-      .video_only{
-        display: inline-block;
-      }
-
-    </style>
-
+    <style media="screen"></style>
   </head>
-  <body>
-    <h1>Hello World!</h1>
-    <h2>二级标题小意思</h2>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-    <!-- <audio src="media/03.mp3" controls="controls"></audio> -->
+<body>
+<div class="container">
+    <h1>安哥影音复读机</h1>
 
 重复次数：
-<input type="text" value="2" id="repeat_times"/>
+  <input type="text" value="2" id="repeat_times"/>
 
-    <div class="alert alert-success" role="alert" id="current_sentence"></div>
+  <button id="hide_subtitle" class="btn btn-primary">hide</button>
+  <button id="show_subtitle" class="btn btn-primary">show</button>
+  <div class="alert alert-success col-sm-12 col-md-12 col-lg-12" >
+    <button class="btn btn-info btn-default" id="prev_sentence" style="display:none"><</button>
+    <div id="current_sentence" class="col-md-10 col-lg-10"></div>
+    <button class="btn btn-info btn-default" id="next_sentence" style="display:none">></button>
+  </div>
+  <div class="video_only col-sm-12 col-md-6 col-lg-6">
+      <video id="player" width="640"  controls="controls">
+          <source src="media/panda1.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+      </video>
+  </div>
+  <div  class="col-md-12 col-lg-6">
+    <ul id="english-list" ></ul>
+    <ul id="chinese-list"></ul>
+  </div>
 
-    <div class="video_only">
-      <button class="btn" id="prev_sentence" style="display:none"><</button>
-        <video id="player" width="640"  controls="controls">
-            <source src="media/panda1.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-      <button class="btn" id="next_sentence" style="display:none">></button>
-    </div>
-    <ul id="english-list">
-      
-    </ul>
-
-
-  </body>
+</div>
+</body>
 
   <script>
     // You can also require other files to run in this process

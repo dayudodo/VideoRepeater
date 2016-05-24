@@ -1,4 +1,4 @@
-var player=document.getElementById("player");
+var G_player=document.getElementById("player"); //全局播放器
 
 var G_timer; //全局时间变量，供整个程序使用
 
@@ -10,11 +10,11 @@ function MediaPlayer(start,end, repeatTimes=1){
 		var rt = $("#repeat_times");
 		// console.log(rt.val());
 		if (rt) { repeatTimes= rt.val()};
-		// let player=vid;
+		// let G_player=vid;
 		if (start > end) { throw new Error("start should less than end.")};
 
 
-		// player.addEventListener("loadedmetadata",function(){
+		// G_player.addEventListener("loadedmetadata",function(){
 		// 	this.currentTime=startTime;
 		// 	ready=true;
 		// 	this.play();
@@ -26,13 +26,13 @@ function MediaPlayer(start,end, repeatTimes=1){
 		//最终还是用setInterval来解决，每多少时间执行一次，并且在次数完成后删除自己。
 		//用事件的话还是有N多问题，因为事件中会有嵌套，并且时间上掌握不准，而Interval是毫秒级的，准确的多！
 		G_timer = setInterval(function(){
-			player.currentTime = start;
+			G_player.currentTime = start;
 			repeatTimes -= 1;
 			if (repeatTimes == 0) { 
-				player.pause();
+				G_player.pause();
 				clearInterval(G_timer);
 			}else{
-				player.play();
+				G_player.play();
 			}
 		},playMilli);
 
@@ -42,11 +42,11 @@ function MediaPlayer(start,end, repeatTimes=1){
 			// alert(startTime+":"+endTime);
 		};
 
-		player.currentTime = start;
-		player.play();
+		G_player.currentTime = start;
+		G_player.play();
 		//奇怪，少了这句就不播放了。。。可能是当你使用src的时候，才会真正的加载吧？
-		// player.controls="controls";
-		// player.play();
-		// console.log(player.currentTime);
+		// G_player.controls="controls";
+		// G_player.play();
+		// console.log(G_player.currentTime);
 }
 
