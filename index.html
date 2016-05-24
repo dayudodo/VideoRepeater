@@ -17,6 +17,7 @@
         if (typeof module === 'object' && typeof module.exports !== 'undefined') {
             window.$ = window.jQuery = module.exports;
         }
+
     </script>
     <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
@@ -37,10 +38,13 @@
     <button class="btn btn-info btn-default" id="next_sentence" style="display:none">></button>
   </div>
   <div class="video_only col-sm-12 col-md-6 col-lg-6">
-      <video id="player" width="640"  controls="controls">
+      <video id="player" width="640"  >
           <source src="media/panda1.mp4" type="video/mp4">
           Your browser does not support the video tag.
       </video>
+  </div>
+  <div class="col-md-12 col-lg-12">
+    <input type="text" class="form-control input-lg" placeholder="type your english here...">
   </div>
   <div  class="col-md-12 col-lg-6">
     <ul id="english-list" ></ul>

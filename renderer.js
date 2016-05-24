@@ -72,5 +72,13 @@ srt('./subtitle/output.srt',function(err,data){
 	});
 	$('#show_subtitle').click(function(){
 		$('ul li').show();
-	})
-})
+	});
+	$(window).keydown(function(e){
+		var focused = $('input').is(':focus');
+		if (!focused) {
+			if (e.keyCode == 37) { prev.click();}; //left
+			if (e.keyCode == 39) { next.click();}; //right
+		};
+	});
+});
+
