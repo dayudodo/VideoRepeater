@@ -15,10 +15,13 @@ srt('./subtitle/output.srt',function(err,data){
 			li.textContent=item.text.split('\n')[0];
 			li.setAttribute("start",item.startTime);
 			li.setAttribute("end",item.endTime);
+			// li.setAttribute("data-toggle","tooltip");
+			// li.setAttribute("data-placement","top");
 			li.setAttribute("title",item.text.split('\n')[1])
 			ul.append(li);
 		};
 	};
+	$("li").tooltip();
 	// for(item of Array.from(data)){
 	// 	console.log(item)
 	// 	// li= document.createElement("li");

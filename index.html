@@ -17,7 +17,7 @@
         if (typeof module === 'object' && typeof module.exports !== 'undefined') {
             window.$ = window.jQuery = module.exports;
         }
-
+        // window.$ = window.jQuery = require('./node_modules/jquery');
     </script>
     <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
@@ -25,7 +25,8 @@
   </head>
 <body>
 <div class="container">
-    <h1>安哥影音复读机</h1>
+    <h1 title="ange repeater" id="title">安哥影音复读机</h1>
+
 
 重复次数：
   <input type="text" value="2" id="repeat_times"/>
