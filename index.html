@@ -5,51 +5,77 @@
     <title>Hello World!</title>
 
 
-    <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
 
     <!-- 可选的Bootstrap主题文件（一般不用引入） -->
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
 
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="./node_modules/jquery/dist/jquery.js"></script>
-    <script type="application/javascript">
-        if (typeof module === 'object' && typeof module.exports !== 'undefined') {
-            window.$ = window.jQuery = module.exports;
-        }
-        // window.$ = window.jQuery = require('./node_modules/jquery');
+    <script>
+      var saveModule = module;
+      delete module;
     </script>
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="./node_modules/angular/angular.js"></script>
+    <script > require('./js/controller.js')</script>
+  <script>
+    module = saveModule;
+  </script>
 
     <style media="screen"></style>
+    <link rel="stylesheet" href="main.css">
   </head>
-<body>
-<div class="container">
+<body ng-app="app">
+<div class="container" ng-controller="sentenceCtrl">
+  <div>
     <h1 title="ange repeater" id="title">安哥影音复读机</h1>
+    重复次数：<input type="text" value="2" id="repeat_times"/>
+    <button id="btn_hide_subtitle" class="btn btn-primary" ng-click="li_display()" ng-bind="is_display? '隐藏字幕':'显示字幕'" ></button>
+    <!-- <button id="btn_show_subtitle" class="btn btn-primary" ng-click="show()"></button> -->
 
-
-重复次数：
-  <input type="text" value="2" id="repeat_times"/>
-
-  <button id="hide_subtitle" class="btn btn-primary">hide</button>
-  <button id="show_subtitle" class="btn btn-primary">show</button>
-  <div class="alert alert-success col-sm-12 col-md-12 col-lg-12" >
-    <button class="btn btn-info btn-default" id="prev_sentence" style="display:none"><</button>
-    <div id="current_sentence" class="col-md-10 col-lg-10"></div>
-    <button class="btn btn-info btn-default" id="next_sentence" style="display:none">></button>
+    <div class="col-lg-6">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search for..." id="search_text">
+              <span class="input-group-btn">
+                <button class="btn btn-info btn-default" id="btn_prev_search" ><</button>
+                <button class="btn btn-info btn-default" id="btn_next_search" >></button>
+              </span>
+            </div><!-- /input-group -->
+    </div>
   </div>
-  <div class="video_only col-sm-12 col-md-6 col-lg-6">
-      <video id="player" width="640"  >
+
+
+  <div class="alert alert-success col-sm-12 col-md-12 col-lg-12" >
+    <button class="btn btn-info btn-default" id="prev_sentence" ng-click="prev_sen()"><</button>
+    <div id="current_sentence" class="col-md-10 col-lg-10" current_index="0" ng-click="play_current()">{{ current_sentence}}</div>
+    <button class="btn btn-info btn-default" id="next_sentence" ng-click="next_sen()">></button>
+  </div>
+
+  <div class="video_only col-sm-12 col-md-12 col-lg-12 " ng-click="play_current()">
+    <div class=" col-sm-12 col-md-12 col-lg-12">
+      <video id="player" width="100%">
           <source src="media/panda1.mp4" type="video/mp4">
           Your browser does not support the video tag.
       </video>
+    </div>
   </div>
+
   <div class="col-md-12 col-lg-12">
     <input type="text" class="form-control input-lg" placeholder="type your english here..." id="user_input">
   </div>
-  <div  class="col-md-12 col-lg-6">
-    <ul id="english-list" ></ul>
-    <ul id="chinese-list"></ul>
+  <div  class="col-md-12 col-lg-6" >
+    <div> <input type="text" ng-model="search.english">查找</div>
+    <ul id="english_list" ng-show="is_display">
+      <li title="{{ item.chinese }}" 
+          ng-repeat="item in items | filter:search" 
+          ng-click="mediaplay(item,$index)" 
+          ng-bind="item.english">
+      </li>
+    </ul>
+    <ul id="chinese_list"></ul>
   </div>
 
 </div>
