@@ -1,5 +1,5 @@
 output= File.open("output.srt", "w")
-File.open('panda1.srt', "r") { |file| 
+File.open('croods.srt', "r") { |file| 
 	alllines=file.readlines
 	# puts alllines.match(/\n\n/)
 	# p alllines[0..4]

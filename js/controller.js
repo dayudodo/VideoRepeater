@@ -3,7 +3,16 @@ var srt = require("srt").fromString;
 
 // 注意需要加上utf-8, 不然就出错，因为其返回的是个二进制的数组，另外，需要使用Sync同步读取、
 // 不然下面的items获取不到值。
-var data = srt(fs.readFileSync('./subtitle/output.srt','utf-8'));
+
+//初始化视频及字幕文件
+var sourceName='croods'
+var videoFileName=`media/${sourceName}.mp4`
+var srtFileName=`./subtitle/${sourceName}.srt`
+
+var vid= document.getElementById('player');
+vid.src=videoFileName;
+
+var data = srt(fs.readFileSync(srtFileName,'utf-8'));
 for(var key in data){
 	data[key]["english"]= data[key].text.split('\n')[0]
 	data[key]["chinese"]= data[key].text.split('\n')[1]
@@ -77,6 +86,8 @@ app.controller("sentenceCtrl",function myCtrl($scope,$timeout){
 			if (e.keyCode == 37) { $scope.prev_sen();}; //left
 			if (e.keyCode == 39) { $scope.next_sen();}; //right
 			if (e.keyCode == 13) { $scope.play_current()};
+		}else{
+			if (e.keyCode == 114) { console.log('help')};
 		};
 	});
 });
