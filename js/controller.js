@@ -55,13 +55,18 @@ app.controller("sentenceCtrl",function myCtrl($scope,$timeout){
 			$scope.sentence.english="";	//首先让所有句子可播放，删除过滤单词
 		};
 	};
+	$scope.prev_search_text="";
 	$scope.search_prev=function(){
 		this.search_init(); 
 	};
 	$scope.search_next=function(){
 		this.search_init();
 		if ($scope.search_text) {
-			for(var index = $scope.current_index; index < dataArray.length; index++){
+			//如果用户新输入内容，那么就从0开始搜索，否则就是查找下一句。
+			var start= ($scope.search_text == $scope.prev_search_text)? $scope.current_index:0 
+			$scope.prev_search_text = $scope.search_text;
+
+			for(var index = start; index < dataArray.length; index++){
 				var sentence = dataArray[index].english.toLowerCase();
 				if(sentence.includes($scope.search_text.toLowerCase())){
 					console.log(`${$scope.current_index} :index:${index}`);
