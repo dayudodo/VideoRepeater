@@ -2,7 +2,7 @@ var G_player=document.getElementById("player"); //全局播放器
 
 var G_timer; //全局时间变量，供整个程序使用
 
-function MediaPlayer(start,end, repeatTimes=1){
+function MediaPlayer(start,end){
 	//看来还是需要改变为全局变量，毕竟只有一个播放器，使用let貌似变量会消失？
 		// var startTime= start;
 		// var endTime= end;

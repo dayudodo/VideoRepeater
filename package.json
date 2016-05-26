@@ -23,9 +23,10 @@
   },
   "homepage": "https://github.com/electron/electron-quick-start#readme",
   "devDependencies": {
+    "angular": "^1.5.5",
+    "bootstrap": "",
     "electron-prebuilt": "^1.1.1",
-    "bootstrap":"",
-    "jquery":"",
-    "srt":""
+    "jquery": "^1.11.3",
+    "srt": ""
   }
 }
