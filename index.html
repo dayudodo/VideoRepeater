@@ -30,22 +30,35 @@
   </head>
 <body ng-app="app">
 <div class="container" ng-controller="sentenceCtrl">
-  <div>
-    <h1 title="ange repeater" id="title">安哥影音复读机</h1>
-    重复次数：<input type="text" value="2" id="repeat_times"/>
-    <button id="btn_hide_subtitle" class="btn btn-primary" ng-click="li_display()" ng-bind="is_display? '隐藏字幕':'显示字幕'" ></button>
-    <!-- <button id="btn_show_subtitle" class="btn btn-primary" ng-click="show()"></button> -->
+  <h1 title="ange repeater" id="title">安哥影音复读机</h1>
 
-    <div class="col-lg-6">
+  <form class="form-inline">
+    <div class="form-group col-lg-6">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for..." id="search_text">
+              <input 
+              class="form-control col-lg-4" 
+              type="text" 
+              placeholder="Search for..." 
+              id="search_text" 
+              ng-model="search_text"
+              size="80">
               <span class="input-group-btn">
-                <button class="btn btn-info btn-default" id="btn_prev_search" ><</button>
-                <button class="btn btn-info btn-default" id="btn_next_search" >></button>
+                <button class="btn btn-info btn-default" id="btn_prev_search" ng-click="search_prev()"><</button>
+                <button class="btn btn-info btn-default" id="btn_next_search" ng-click="search_next()">></button>
               </span>
             </div><!-- /input-group -->
     </div>
-  </div>
+    <div class="form-group">
+      <label >重复次数：</label>
+      <select class="form-control" id="repeat_times">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+      </select>
+      <button id="btn_hide_subtitle" class="btn btn-primary" ng-click="li_display()" ng-bind="is_display? '隐藏字幕':'显示字幕'" ></button>
+    </div>
+  
+  </form>
 
 
   <div class="alert alert-success col-sm-12 col-md-12 col-lg-12" >
@@ -67,10 +80,10 @@
     <input type="text" class="form-control input-lg" placeholder="type your english here..." id="user_input">
   </div>
   <div  class="col-md-12 col-lg-6" >
-    <div> <input type="text" ng-model="search.english">查找</div>
+    <div> <input type="text" ng-model="sentence.english">过滤</div>
     <ul id="english_list" ng-show="is_display">
       <li title="{{ item.chinese }}" 
-          ng-repeat="item in items | filter:search" 
+          ng-repeat="item in items | filter:sentence" 
           ng-click="mediaplay(item,$index)" 
           ng-bind="item.english">
       </li>

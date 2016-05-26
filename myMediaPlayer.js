@@ -7,6 +7,8 @@ function MediaPlayer(start,end){
 		// var startTime= start;
 		// var endTime= end;
 		var ready=false;
+
+		var repeatTimes = 1;
 		var rt = $("#repeat_times");
 		// console.log(rt.val());
 		if (rt) { repeatTimes= rt.val()};
