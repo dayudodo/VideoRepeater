@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+var ReactDOM = require('react-dom');
 
 var Timer = React.createClass({
   getInitialState: function () {
@@ -19,10 +20,10 @@ var Timer = React.createClass({
     return React.createElement(
       'div',
       null,
-      '使用时间: ',
+      '学习时间: ',
       this.state.secondsElapsed
     );
   }
 });
 
-module.exports = Timer;
+ReactDOM.render(React.createElement(Timer, null), document.getElementById('timer'));

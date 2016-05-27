@@ -1,4 +1,5 @@
 const React = require('react');  
+var ReactDOM = require('react-dom');
 
 var Timer = React.createClass({
   getInitialState: function() {
@@ -15,9 +16,9 @@ var Timer = React.createClass({
   },
   render: function() {
     return (
-      <div>使用时间: {this.state.secondsElapsed}</div>
+      <div>学习时间: {this.state.secondsElapsed}</div>
     );
   }
 });
 
-module.exports = Timer;
+ReactDOM.render(<Timer />, document.getElementById('timer'));
