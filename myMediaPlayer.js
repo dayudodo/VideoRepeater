@@ -15,12 +15,6 @@ function MediaPlayer(start,end){
 		// let G_player=vid;
 		if (start > end) { throw new Error("start should less than end.")};
 
-
-		// G_player.addEventListener("loadedmetadata",function(){
-		// 	this.currentTime=startTime;
-		// 	ready=true;
-		// 	this.play();
-		// });
 		var playMilli = (end-start)*1000;
 
 		//多次点击可能会产生问题，所以一进入就要先取消，然后再设置新的时间段！并且G_timer是全局变量

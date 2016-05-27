@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "build": "webpack --progress --colors",
-    "start": "gulp watch",
+    "start": "electron main.js",
     "win": "node_modules\\electron-prebuilt\\dist\\electron .",
     "osx": "node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron ."
   },
@@ -27,15 +27,22 @@
   "homepage": "https://github.com/electron/electron-quick-start#readme",
   "devDependencies": {
     "angular": "^1.5.5",
+    // "babel-core": "^6.9.0",
+    // "babel-eslint": "^6.0.4",
+    // "babel-loader": "^6.2.4",
+    // "babel-preset-es2015": "^6.9.0",
+    // "babel-preset-react": "^6.5.0",
+    // "babel-runtime": "^6.9.0",
     "bootstrap": "^3.3.6",
+    // "copy-webpack-plugin": "^3.0.0",
     "css-loader": "^0.23.1",
     "electron-prebuilt": "^1.1.1",
     "fs": "0.0.2",
-    "gulp": "^3.9.0",
-    "gulp-babel": "^5.2.1",
-    "gulp-less": "^3.0.3",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-less": "^3.1.0",
     "gulp-livereload": "^3.8.1",
-    "gulp-run": "^1.6.11",
+    "gulp-run": "^1.6.12",
     "jquery": "^1.11.3",
     "less-loader": "^2.2.3",
     "material-ui": "^0.15.0",
@@ -43,6 +50,8 @@
     "react-dom": "^15.1.0",
     "react-tap-event-plugin": "^1.0.0",
     "srt": "0.0.3",
-    "style-loader": "^0.13.1"
+    "style-loader": "^0.13.1",
+    // "webpack": "^1.13.1",
+    // "webpack-dev-server": "^1.14.1"
   }
 }

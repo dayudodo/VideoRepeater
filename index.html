@@ -19,11 +19,15 @@
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="./node_modules/angular/angular.js"></script>
+     <script src="./node_modules/angular/angular.js"></script>
+     <!-- // <script src="./node_modules/react/dist/react.js"></script> -->
+     
+
 
   <script>
     module = saveModule;
   </script>
+
 
     <style media="screen"></style>
     <link rel="stylesheet" href="main.css">
@@ -31,6 +35,7 @@
 <body ng-app="app">
 <div class="container" ng-controller="sentenceCtrl">
   <h1 title="ange repeater" id="title">安哥影音复读机</h1>
+  <div id="app"></div>
 
   <form class="form-inline">
     <div class="form-group col-lg-6">
@@ -101,6 +106,6 @@
   </script>
   <script type="text/javascript" src="myMediaPlayer.js"></script>
   <script > require('./js/controller.js')</script>
-  <script type="text/javascript" src="srt-reader.js"></script>
+  <script>require('./public/app/index');</script>
 
 </html>
