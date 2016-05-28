@@ -1,6 +1,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+
 var Timer = require('./timer');
+var Current_sentence= require('./current_sentence');
 var EnglishList = require('./EnglishList');
 
 var fs = require('fs');
@@ -30,11 +32,6 @@ for(var index in data){
 	srtArray= srtArray.concat(data[index]);
 }
 
-// var CurrentSentence = React.createClass({
-//   render:function(){
-//     return({this.props.sen});
-//   }
-// });
 
 
 var SRTApp= React.createClass({
@@ -43,7 +40,8 @@ var SRTApp= React.createClass({
         items: srtArray
       , text: ''
       , current_index: 0
-      , prev_search_text: '' };
+      , prev_search_text: ''
+      , current_sentence: new Object() };
   },
   onChange: function(e) {
     this.setState({text: e.target.value});
@@ -53,6 +51,7 @@ var SRTApp= React.createClass({
     // console.log(this.state.text);
     let search_text = this.state.text; //state的好处是拥有历史功能？
     var english_list = ReactDOM.findDOMNode(this.refs.english_list).children;
+
     if (search_text && search_text.length!=0) {
       //如果用户新输入内容，那么就从0开始搜索，否则就是查找下一句。
       var start= (search_text == this.state.prev_search_text)? this.state.current_index : 0 
@@ -78,10 +77,25 @@ var SRTApp= React.createClass({
 
     // this.setState({text:''});
   },
-  findEnglish:function(e){
-
+  prev_sentence:function(){
+    var english_list = ReactDOM.findDOMNode(this.refs.english_list).children;
+    var prev= english_list[this.state.current_index - 1]
+    if(prev){ 
+      this.setState({current_index: this.state.current_index - 1})
+      prev.click(); }
   },
-  render: function() {
+  next_sentence:function(){
+    var english_list = ReactDOM.findDOMNode(this.refs.english_list).children;
+    var next= english_list[this.state.current_index + 1]
+    if(next){ 
+      this.setState({current_index: this.state.current_index + 1})
+      next.click(); }
+  },
+  change_current_sentence:function(item){
+    // console.log(item);
+    this.setState({current_sentence: item});  
+  },
+  render: function(){
     return (
       <div>
         <h3>字幕</h3>
@@ -89,7 +103,8 @@ var SRTApp= React.createClass({
           <input onChange={this.onChange} value={this.state.text} />
           <button className="btn btn-default">下</button>
         </form>
-        <EnglishList items={this.state.items} ref="english_list"/>
+        <Current_sentence current_sentence={ this.state.current_sentence } prev_sentence={this.prev_sentence} next_sentence={this.next_sentence}/>
+        <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence }/>
       </div>
     );
   }
