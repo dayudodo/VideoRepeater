@@ -2,7 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var Timer = require('./timer');
-var Current_sentence= require('./current_sentence');
+var CurrentSentence= require('./currentSentence');
 var EnglishList = require('./EnglishList');
 
 var fs = require('fs');
@@ -39,18 +39,22 @@ var SRTApp= React.createClass({
     return {
         items: srtArray
       , text: ''
-      , current_index: 0
+      , textFilter: ''
+      , current_index: -1
       , prev_search_text: ''
       , current_sentence: new Object() };
   },
   onChange: function(e) {
     this.setState({text: e.target.value});
   },
+  getEnglishList:function(){
+    return ReactDOM.findDOMNode(this.refs.english_list).children;
+  },
   handleSubmit: function(e) {
     e.preventDefault();
     // console.log(this.state.text);
     let search_text = this.state.text; //state的好处是拥有历史功能？
-    var english_list = ReactDOM.findDOMNode(this.refs.english_list).children;
+    var english_list = this.getEnglishList();
 
     if (search_text && search_text.length!=0) {
       //如果用户新输入内容，那么就从0开始搜索，否则就是查找下一句。
@@ -74,26 +78,40 @@ var SRTApp= React.createClass({
       }
       // alert("last word");
     };
-
-    // this.setState({text:''});
+  },
+  play_sentence:function(index){
+    if (index==NaN) {throw 'params index error in play_sentence().'};
+    var english_list = this.getEnglishList();
+    var english= english_list[index]
+    if(english){ 
+      this.setState({current_index: index})
+      english.click(); }
+  },
+  play_current:function(){
+    this.play_sentence(this.state.current_index);
   },
   prev_sentence:function(){
-    var english_list = ReactDOM.findDOMNode(this.refs.english_list).children;
-    var prev= english_list[this.state.current_index - 1]
-    if(prev){ 
-      this.setState({current_index: this.state.current_index - 1})
-      prev.click(); }
+    this.play_sentence(this.state.current_index - 1)
   },
   next_sentence:function(){
-    var english_list = ReactDOM.findDOMNode(this.refs.english_list).children;
-    var next= english_list[this.state.current_index + 1]
-    if(next){ 
-      this.setState({current_index: this.state.current_index + 1})
-      next.click(); }
+    this.play_sentence(this.state.current_index + 1)
   },
   change_current_sentence:function(item){
     // console.log(item);
     this.setState({current_sentence: item});  
+    var index = this.state.items.indexOf(item); //一切的数据变化都集中到items中，如此，子组件的数据获取其实就根据state中的数据来！
+    this.setState({current_index: index});
+  },
+  filterChange:function(e){
+    this.setState({textFilter: e.target.value})
+  },
+  handleFilter:function(e){
+    e.preventDefault();
+    var newArray= srtArray.filter((item)=>{
+      return item.english.includes(this.state.textFilter);
+    });
+    // console.log(newArray.slice(2))
+    this.setState({items: newArray});
   },
   render: function(){
     return (
@@ -103,11 +121,28 @@ var SRTApp= React.createClass({
           <input onChange={this.onChange} value={this.state.text} />
           <button className="btn btn-default">下</button>
         </form>
-        <Current_sentence current_sentence={ this.state.current_sentence } prev_sentence={this.prev_sentence} next_sentence={this.next_sentence}/>
+        <form onSubmit={this.handleFilter}>
+          <input onChange={this.filterChange} value={this.state.textFilter} />
+        </form>
+        <CurrentSentence current_sentence={ this.state.current_sentence } prev_sentence={this.prev_sentence} next_sentence={this.next_sentence}/>
         <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence }/>
       </div>
     );
   }
 });
 
-ReactDOM.render(<SRTApp />, document.getElementById('english_list'));
+var srtrendered = ReactDOM.render(<SRTApp />, document.getElementById('english_list'));
+
+//按键控制
+$(window).keydown(function(e){
+  var focused = $('input').is(':focus');
+  if (!focused) {
+    if (e.keyCode == 37) { srtrendered.prev_sentence();}; //left
+    if (e.keyCode == 39) { srtrendered.next_sentence();}; //right
+    if (e.keyCode == 13) { 
+      srtrendered.play_current()
+    };
+  }else{
+    if (e.keyCode == 114) { console.log('help')};
+  };
+})
