@@ -41,7 +41,8 @@ var SRTApp = React.createClass({
       textFilter: '',
       current_index: -1,
       prev_search_text: '',
-      current_sentence: new Object() };
+      current_sentence: new Object(),
+      hide: false };
   },
   onChange: function (e) {
     this.setState({ text: e.target.value });
@@ -60,8 +61,8 @@ var SRTApp = React.createClass({
       var start = search_text == this.state.prev_search_text ? this.state.current_index : 0;
       this.setState({ prev_search_text: search_text }); //有没有全局变量的办法？不用设置啥state?仅仅用来存储数据而已？this.props? ==todo
 
-      for (var index = start; index < srtArray.length; index++) {
-        var sentence = srtArray[index].english.toLowerCase();
+      for (var index = start; index < this.state.items.length; index++) {
+        var sentence = this.state.items[index].english.toLowerCase();
         if (sentence.includes(search_text.toLowerCase())) {
           console.log(`${ this.state.current_index } :index:${ index }`);
           if (index == this.state.current_index) {
@@ -72,7 +73,7 @@ var SRTApp = React.createClass({
 
           break;
         } else {
-          if (srtArray.length - 1 == index) {
+          if (this.state.items.length - 1 == index) {
             console.log('last sentence');
           };
         }
@@ -117,18 +118,38 @@ var SRTApp = React.createClass({
     // console.log(newArray.slice(2))
     this.setState({ items: newArray });
   },
+  currentSentenceClick: function (e) {
+    this.play_current();
+  },
+  hideOrShowSubtitle: function (e) {
+    e.preventDefault();
+    this.setState({ hide: !this.state.hide });
+  },
   render: function () {
     return React.createElement(
       'div',
       null,
       React.createElement(
-        'h3',
-        null,
-        '字幕'
+        'form',
+        { class: 'form-inline' },
+        React.createElement(
+          'div',
+          { class: 'form-group' },
+          React.createElement(
+            'button',
+            { onClick: this.hideOrShowSubtitle, class: 'btn btn-primary', id: 'hideorshow' },
+            this.state.hide ? '显示字幕' : '隐藏字幕'
+          )
+        )
       ),
       React.createElement(
         'form',
         { onSubmit: this.handleSubmit },
+        React.createElement(
+          'label',
+          null,
+          '搜索：'
+        ),
         React.createElement('input', { onChange: this.onChange, value: this.state.text }),
         React.createElement(
           'button',
@@ -139,15 +160,24 @@ var SRTApp = React.createClass({
       React.createElement(
         'form',
         { onSubmit: this.handleFilter },
+        React.createElement(
+          'label',
+          { title: '过滤后只会显示那些包含过滤词的句子' },
+          '过滤：'
+        ),
         React.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
       ),
-      React.createElement(CurrentSentence, { current_sentence: this.state.current_sentence, prev_sentence: this.prev_sentence, next_sentence: this.next_sentence }),
+      React.createElement(CurrentSentence, {
+        current_sentence: this.state.current_sentence,
+        prev_sentence: this.prev_sentence,
+        next_sentence: this.next_sentence,
+        currentSentenceClick: this.currentSentenceClick }),
       React.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence })
     );
   }
 });
 
-var srtrendered = ReactDOM.render(React.createElement(SRTApp, null), document.getElementById('english_list'));
+var srtrendered = ReactDOM.render(React.createElement(SRTApp, null), document.getElementById('srtapp_container'));
 
 //按键控制
 $(window).keydown(function (e) {

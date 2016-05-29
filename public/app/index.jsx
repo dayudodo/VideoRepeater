@@ -42,7 +42,8 @@ var SRTApp= React.createClass({
       , textFilter: ''
       , current_index: -1
       , prev_search_text: ''
-      , current_sentence: new Object() };
+      , current_sentence: new Object()
+      , hide: false };
   },
   onChange: function(e) {
     this.setState({text: e.target.value});
@@ -61,8 +62,8 @@ var SRTApp= React.createClass({
       var start= (search_text == this.state.prev_search_text)? this.state.current_index : 0 
       this.setState({prev_search_text: search_text}); //有没有全局变量的办法？不用设置啥state?仅仅用来存储数据而已？this.props? ==todo
 
-      for(var index = start; index < srtArray.length; index++){
-        var sentence = srtArray[index].english.toLowerCase();
+      for(var index = start; index < this.state.items.length; index++){
+        var sentence = this.state.items[index].english.toLowerCase();
         if(sentence.includes(search_text.toLowerCase())){
           console.log(`${this.state.current_index} :index:${index}`);
           if (index == this.state.current_index ) {
@@ -73,7 +74,7 @@ var SRTApp= React.createClass({
 
           break;
         }else{
-          if (srtArray.length-1 == index) {  console.log('last sentence')};
+          if (this.state.items.length-1 == index) {  console.log('last sentence')};
         }
       }
       // alert("last word");
@@ -113,35 +114,50 @@ var SRTApp= React.createClass({
     // console.log(newArray.slice(2))
     this.setState({items: newArray});
   },
+  currentSentenceClick:function(e){
+    this.play_current();
+  },
+  hideOrShowSubtitle:function(e){
+    e.preventDefault();
+    this.setState({hide: !this.state.hide});
+  },
   render: function(){
     return (
       <div>
-        <h3>字幕</h3>
+        <form class="form-inline">
+          <div class="form-group">
+            <button onClick={this.hideOrShowSubtitle} class="btn btn-primary" id="hideorshow">{ this.state.hide? '显示字幕': '隐藏字幕'}</button>
+          </div>
+        </form>
         <form onSubmit={this.handleSubmit}>
+          <label>搜索：</label>
           <input onChange={this.onChange} value={this.state.text} />
           <button className="btn btn-default">下</button>
         </form>
         <form onSubmit={this.handleFilter}>
+          <label title="过滤后只会显示那些包含过滤词的句子">过滤：</label>
           <input onChange={this.filterChange} value={this.state.textFilter} />
         </form>
-        <CurrentSentence current_sentence={ this.state.current_sentence } prev_sentence={this.prev_sentence} next_sentence={this.next_sentence}/>
-        <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence }/>
+        <CurrentSentence 
+          current_sentence={ this.state.current_sentence } 
+          prev_sentence={this.prev_sentence} 
+          next_sentence={this.next_sentence} 
+          currentSentenceClick={this.currentSentenceClick} />
+        <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } />
       </div>
     );
   }
 });
 
-var srtrendered = ReactDOM.render(<SRTApp />, document.getElementById('english_list'));
+var srtrendered = ReactDOM.render(<SRTApp />, document.getElementById('srtapp_container'));
 
 //按键控制
 $(window).keydown(function(e){
   var focused = $('input').is(':focus');
   if (!focused) {
-    if (e.keyCode == 37) { srtrendered.prev_sentence();}; //left
-    if (e.keyCode == 39) { srtrendered.next_sentence();}; //right
-    if (e.keyCode == 13) { 
-      srtrendered.play_current()
-    };
+    if (e.keyCode == 37) { srtrendered.prev_sentence()}; //left
+    if (e.keyCode == 39) { srtrendered.next_sentence()}; //right
+    if (e.keyCode == 13) { srtrendered.play_current()  };
   }else{
     if (e.keyCode == 114) { console.log('help')};
   };

@@ -7,7 +7,7 @@ var EnglishList = React.createClass({
 	},
 	shouldComponentUpdate(nextProps, nextState){
 		// return false;
-		return this.props.items != nextProps.items;  //只有当items改变的时候才会re-render!
+		return (this.props.items != nextProps.items) ;  //只有当items改变的时候才会re-render!
 	},
 	handleClick(item){
 		MediaPlayer(item.startTime/1000, item.endTime/1000);
