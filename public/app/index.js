@@ -10,6 +10,8 @@ var EnglishList = require('./EnglishList');
 var fs = require('fs');
 var srt = require("srt").fromString;
 
+var hideSubtitle = false;
+
 //初始化视频及字幕文件
 var sourceName = 'croods';
 var videoFileName = `media/${ sourceName }.mp4`;
@@ -41,8 +43,8 @@ var SRTApp = React.createClass({
       textFilter: '',
       current_index: -1,
       prev_search_text: '',
-      current_sentence: new Object(),
-      hide: false };
+      current_sentence: new Object()
+    };
   },
   onChange: function (e) {
     this.setState({ text: e.target.value });
@@ -123,7 +125,8 @@ var SRTApp = React.createClass({
   },
   hideOrShowSubtitle: function (e) {
     e.preventDefault();
-    this.setState({ hide: !this.state.hide });
+    // this.setState({hide: !this.state.hide});
+    hideSubtitle = !hideSubtitle;
   },
   render: function () {
     return React.createElement(
@@ -138,7 +141,7 @@ var SRTApp = React.createClass({
           React.createElement(
             'button',
             { onClick: this.hideOrShowSubtitle, class: 'btn btn-primary', id: 'hideorshow' },
-            this.state.hide ? '显示字幕' : '隐藏字幕'
+            hideSubtitle ? '隐藏字幕' : '显示'
           )
         )
       ),
@@ -198,3 +201,14 @@ $(window).keydown(function (e) {
     };
   };
 });
+
+// $("#hideorshow").click(function(){
+//   var el= $("#english_list");
+//    if (!hideSubtitle) {
+//     $(this).text("显示字幕");
+//   }else{
+//     $(this).text("隐藏字幕");
+//   };
+//   $('#english_list').toggleClass('hidden');
+//   hideSubtitle = !hideSubtitle;
+// })

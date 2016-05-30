@@ -8,6 +8,7 @@ var EnglishList = require('./EnglishList');
 var fs = require('fs');
 var srt = require("srt").fromString;
 
+var hideSubtitle = false;
 
 //初始化视频及字幕文件
 var sourceName='croods'
@@ -43,7 +44,7 @@ var SRTApp= React.createClass({
       , current_index: -1
       , prev_search_text: ''
       , current_sentence: new Object()
-      , hide: false };
+       };
   },
   onChange: function(e) {
     this.setState({text: e.target.value});
@@ -119,14 +120,15 @@ var SRTApp= React.createClass({
   },
   hideOrShowSubtitle:function(e){
     e.preventDefault();
-    this.setState({hide: !this.state.hide});
+    // this.setState({hide: !this.state.hide});
+    hideSubtitle = !hideSubtitle;
   },
   render: function(){
     return (
       <div>
         <form class="form-inline">
           <div class="form-group">
-            <button onClick={this.hideOrShowSubtitle} class="btn btn-primary" id="hideorshow">{ this.state.hide? '显示字幕': '隐藏字幕'}</button>
+            <button onClick={this.hideOrShowSubtitle} class="btn btn-primary" id="hideorshow" >{ hideSubtitle? '隐藏字幕':'显示'}</button>
           </div>
         </form>
         <form onSubmit={this.handleSubmit}>
@@ -162,3 +164,14 @@ $(window).keydown(function(e){
     if (e.keyCode == 114) { console.log('help')};
   };
 })
+
+// $("#hideorshow").click(function(){
+//   var el= $("#english_list");
+//    if (!hideSubtitle) { 
+//     $(this).text("显示字幕");
+//   }else{
+//     $(this).text("隐藏字幕");
+//   };
+//   $('#english_list').toggleClass('hidden');
+//   hideSubtitle = !hideSubtitle;
+// })

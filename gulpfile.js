@@ -4,6 +4,7 @@ var livereload = require('gulp-livereload');
 var run = require('gulp-run');  
 var less = require('gulp-less');  
 var babel = require('gulp-babel');
+var plumber = require('gulp-plumber');
 
 var lessOptions = {  
     relativeUrls: true
@@ -24,6 +25,7 @@ gulp.task("server", ["babel_demo", "less_demo"], function (callback) {
         if (event.type === 'deleted') return;
 
         gulp.src(event.path)
+            .pipe(plumber())
             .pipe(babel(babelOptions))
             .pipe(gulp.dest(path.dirname(event.path)));
     });
