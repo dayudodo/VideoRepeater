@@ -146,33 +146,35 @@ var SRTApp= React.createClass({
   render: function(){
     return (
       <MuiThemeProvider  muiTheme={getMuiTheme()}>
-        <form class="form-inline">
-          <div class="form-group">
-            
-               <RaisedButton label={ this.state.hide? '隐藏字幕':'显示字幕'} onClick={this.hideOrShowSubtitle}/>
-            
-              <Toggle
-                    label="显示字幕"
-                    defaultToggled={true}
-                    style={styles.toggle}
-                  />
-          </div>
-        </form>
-        <form onSubmit={this.handleSubmit}>
-          <label>搜索：</label>
-          <input onChange={this.onChange} value={this.state.text} />
-          <button className="btn btn-default">下</button>
-        </form>
-        <form onSubmit={this.handleFilter}>
-          <label title="过滤后只会显示那些包含过滤词的句子">过滤：</label>
-          <input onChange={this.filterChange} value={this.state.textFilter} />
-        </form>
-        <CurrentSentence 
-          current_sentence={ this.state.current_sentence } 
-          prev_sentence={this.prev_sentence} 
-          next_sentence={this.next_sentence} 
-          currentSentenceClick={this.currentSentenceClick} />
-        <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } hide={this.state.hide}/>
+        <div>
+          <form class="form-inline">
+            <div class="form-group">
+              
+                 <RaisedButton label={ this.state.hide? '隐藏字幕':'显示字幕'} onClick={this.hideOrShowSubtitle}/>
+              
+                <Toggle
+                      label="显示字幕"
+                      defaultToggled={true}
+                      style={styles.toggle}
+                    />
+            </div>
+          </form>
+          <form onSubmit={this.handleSubmit}>
+            <label>搜索：</label>
+            <input onChange={this.onChange} value={this.state.text} />
+            <button className="btn btn-default">下</button>
+          </form>
+          <form onSubmit={this.handleFilter}>
+            <label title="过滤后只会显示那些包含过滤词的句子">过滤：</label>
+            <input onChange={this.filterChange} value={this.state.textFilter} />
+          </form>
+          <CurrentSentence 
+            current_sentence={ this.state.current_sentence } 
+            prev_sentence={this.prev_sentence} 
+            next_sentence={this.next_sentence} 
+            currentSentenceClick={this.currentSentenceClick} />
+          <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } hide={this.state.hide}/>
+        </div>
       </MuiThemeProvider>
     );
   }

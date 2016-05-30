@@ -188,50 +188,54 @@ var SRTApp = _react2.default.createClass({
       _MuiThemeProvider2.default,
       { muiTheme: (0, _getMuiTheme2.default)() },
       _react2.default.createElement(
-        'form',
-        { 'class': 'form-inline' },
+        'div',
+        null,
         _react2.default.createElement(
-          'div',
-          { 'class': 'form-group' },
-          _react2.default.createElement(_RaisedButton2.default, { label: this.state.hide ? '隐藏字幕' : '显示字幕', onClick: this.hideOrShowSubtitle }),
-          _react2.default.createElement(_Toggle2.default, {
-            label: '显示字幕',
-            defaultToggled: true,
-            style: styles.toggle
-          })
-        )
-      ),
-      _react2.default.createElement(
-        'form',
-        { onSubmit: this.handleSubmit },
-        _react2.default.createElement(
-          'label',
-          null,
-          '搜索：'
+          'form',
+          { 'class': 'form-inline' },
+          _react2.default.createElement(
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(_RaisedButton2.default, { label: this.state.hide ? '隐藏字幕' : '显示字幕', onClick: this.hideOrShowSubtitle }),
+            _react2.default.createElement(_Toggle2.default, {
+              label: '显示字幕',
+              defaultToggled: true,
+              style: styles.toggle
+            })
+          )
         ),
-        _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
         _react2.default.createElement(
-          'button',
-          { className: 'btn btn-default' },
-          '下'
-        )
-      ),
-      _react2.default.createElement(
-        'form',
-        { onSubmit: this.handleFilter },
-        _react2.default.createElement(
-          'label',
-          { title: '过滤后只会显示那些包含过滤词的句子' },
-          '过滤：'
+          'form',
+          { onSubmit: this.handleSubmit },
+          _react2.default.createElement(
+            'label',
+            null,
+            '搜索：'
+          ),
+          _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
+          _react2.default.createElement(
+            'button',
+            { className: 'btn btn-default' },
+            '下'
+          )
         ),
-        _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
-      ),
-      _react2.default.createElement(CurrentSentence, {
-        current_sentence: this.state.current_sentence,
-        prev_sentence: this.prev_sentence,
-        next_sentence: this.next_sentence,
-        currentSentenceClick: this.currentSentenceClick }),
-      _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence, hide: this.state.hide })
+        _react2.default.createElement(
+          'form',
+          { onSubmit: this.handleFilter },
+          _react2.default.createElement(
+            'label',
+            { title: '过滤后只会显示那些包含过滤词的句子' },
+            '过滤：'
+          ),
+          _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
+        ),
+        _react2.default.createElement(CurrentSentence, {
+          current_sentence: this.state.current_sentence,
+          prev_sentence: this.prev_sentence,
+          next_sentence: this.next_sentence,
+          currentSentenceClick: this.currentSentenceClick }),
+        _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence, hide: this.state.hide })
+      )
     );
   }
 });
