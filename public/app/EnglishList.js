@@ -1,15 +1,22 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+var _react = require('react');
 
-var LiItem = React.createClass({
-	shouldComponentUpdate(nextProps, nextState) {
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ReactDOM = require('react-dom'); // var React = require('react');
+
+
+var LiItem = _react2.default.createClass({
+	displayName: 'LiItem',
+	shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
 		// return this.props.item != nextProps.item
 		return false; //有状态的组件其实比下面无状态组件的速度要更快，无状态的话每次都会生成！
 	},
-	render() {
-		return React.createElement(
+	render: function render() {
+		return _react2.default.createElement(
 			'li',
 			{ onClick: this.props.onClick },
 			this.props.item.english
@@ -20,15 +27,17 @@ var LiItem = React.createClass({
 // 	return <li onClick={props.onClick }>{props.item.english}</li>
 // }
 
-var EnglishList = React.createClass({
-	componentDidMount() {
+var EnglishList = _react2.default.createClass({
+	displayName: 'EnglishList',
+	componentDidMount: function componentDidMount() {
 		console.log('did mount');
 	},
+
 	// shouldComponentUpdate(nextProps, nextState){
 	// 	// return false;
 	// 	return (this.props.items != nextProps.items)  //只有当items改变的时候才会re-render! 其它情况的state改变并不会影响到这儿！
 	// },
-	handleClick(item) {
+	handleClick: function handleClick(item) {
 		MediaPlayer(item.startTime / 1000, item.endTime / 1000);
 		// ReactDOM.render(
 		//   <div>{item.english}</div>,
@@ -36,12 +45,14 @@ var EnglishList = React.createClass({
 		// );
 		this.props.change_current_sentence(item);
 	},
-	render() {
-		return React.createElement(
+	render: function render() {
+		var _this = this;
+
+		return _react2.default.createElement(
 			'ul',
 			{ id: 'english_list', className: this.props.hide ? 'hidden' : '' },
-			this.props.items.map(item => {
-				return React.createElement(LiItem, { key: item.startTime, onClick: this.handleClick.bind(null, item), item: item });
+			this.props.items.map(function (item) {
+				return _react2.default.createElement(LiItem, { key: item.startTime, onClick: _this.handleClick.bind(null, item), item: item });
 			})
 		);
 	}

@@ -1,7 +1,17 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var mui = require('material-ui');
-var PaperButton = mui.PaperButton;
+import React from 'react';
+import ReactDOM from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import Toggle from 'material-ui/Toggle';
+import MyAwesomeReactComponent from './MyAwesomeReactComponent';
+
+import Main from './material-main'
+
+injectTapEventPlugin();
 
 var Timer = require('./timer');
 var CurrentSentence= require('./currentSentence');
@@ -35,7 +45,16 @@ for(var index in data){
 	srtArray= srtArray.concat(data[index]);
 }
 
+ReactDOM.render(<Main />, document.getElementById('material'));
 
+const styles = {
+  block: {
+    maxWidth: 250,
+  },
+  toggle: {
+    marginBottom: 16,
+  },
+};
 
 var SRTApp= React.createClass({
   getInitialState: function() {
@@ -126,11 +145,17 @@ var SRTApp= React.createClass({
   },
   render: function(){
     return (
-      <div>
+      <MuiThemeProvider  muiTheme={getMuiTheme()}>
         <form class="form-inline">
           <div class="form-group">
-            <button onClick={this.hideOrShowSubtitle} class="btn btn-primary" id="hideorshow" >{ this.state.hide? '隐藏字幕':'显示字幕'}</button>
-            <PaperButton type={PaperButton.Types.FLAT} label="Default" />
+            
+               <RaisedButton label={ this.state.hide? '隐藏字幕':'显示字幕'} onClick={this.hideOrShowSubtitle}/>
+            
+              <Toggle
+                    label="显示字幕"
+                    defaultToggled={true}
+                    style={styles.toggle}
+                  />
           </div>
         </form>
         <form onSubmit={this.handleSubmit}>
@@ -148,7 +173,7 @@ var SRTApp= React.createClass({
           next_sentence={this.next_sentence} 
           currentSentenceClick={this.currentSentenceClick} />
         <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } hide={this.state.hide}/>
-      </div>
+      </MuiThemeProvider>
     );
   }
 });

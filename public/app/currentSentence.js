@@ -4,20 +4,22 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var CurrentSentence = React.createClass({
+	displayName: 'CurrentSentence',
+
 	//按钮点击就去执行父组件中的方法好了，因为资源都在父组件之中！
-	prev_sentence: function (e) {
+	prev_sentence: function prev_sentence(e) {
 		e.preventDefault();
 		this.props.prev_sentence();
 	},
-	next_sentence: function (e) {
+	next_sentence: function next_sentence(e) {
 		e.preventDefault();
 		this.props.next_sentence();
 	},
-	handleClick: function (e) {
+	handleClick: function handleClick(e) {
 		e.preventDefault();
 		this.props.currentSentenceClick();
 	},
-	render() {
+	render: function render() {
 		return React.createElement(
 			'div',
 			{ className: 'col-sm-12 col-md-12 col-lg-12' },

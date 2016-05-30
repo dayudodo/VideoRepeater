@@ -1,4 +1,5 @@
-var React = require('react');
+// var React = require('react');
+import React from 'react';
 var ReactDOM = require('react-dom');
 
 var LiItem= React.createClass({

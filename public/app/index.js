@@ -1,9 +1,48 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var mui = require('material-ui');
-var PaperButton = mui.PaperButton;
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactTapEventPlugin = require('react-tap-event-plugin');
+
+var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
+
+var _getMuiTheme = require('material-ui/styles/getMuiTheme');
+
+var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+var _MuiThemeProvider = require('material-ui/styles/MuiThemeProvider');
+
+var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+var _FlatButton = require('material-ui/FlatButton');
+
+var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _RaisedButton = require('material-ui/RaisedButton');
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+var _Toggle = require('material-ui/Toggle');
+
+var _Toggle2 = _interopRequireDefault(_Toggle);
+
+var _MyAwesomeReactComponent = require('./MyAwesomeReactComponent');
+
+var _MyAwesomeReactComponent2 = _interopRequireDefault(_MyAwesomeReactComponent);
+
+var _materialMain = require('./material-main');
+
+var _materialMain2 = _interopRequireDefault(_materialMain);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _reactTapEventPlugin2.default)();
 
 var Timer = require('./timer');
 var CurrentSentence = require('./currentSentence');
@@ -16,8 +55,8 @@ var hideSubtitle = false;
 
 //初始化视频及字幕文件
 var sourceName = 'croods';
-var videoFileName = `media/${ sourceName }.mp4`;
-var srtFileName = `./subtitle/${ sourceName }.srt`;
+var videoFileName = 'media/' + sourceName + '.mp4';
+var srtFileName = './subtitle/' + sourceName + '.srt';
 
 var vid = document.getElementById('player');
 vid.src = videoFileName;
@@ -37,8 +76,21 @@ for (var index in data) {
   srtArray = srtArray.concat(data[index]);
 }
 
-var SRTApp = React.createClass({
-  getInitialState: function () {
+_reactDom2.default.render(_react2.default.createElement(_materialMain2.default, null), document.getElementById('material'));
+
+var styles = {
+  block: {
+    maxWidth: 250
+  },
+  toggle: {
+    marginBottom: 16
+  }
+};
+
+var SRTApp = _react2.default.createClass({
+  displayName: 'SRTApp',
+
+  getInitialState: function getInitialState() {
     return {
       items: srtArray,
       text: '',
@@ -48,16 +100,16 @@ var SRTApp = React.createClass({
       current_sentence: new Object(),
       hide: false };
   },
-  onChange: function (e) {
+  onChange: function onChange(e) {
     this.setState({ text: e.target.value });
   },
-  getEnglishList: function () {
-    return ReactDOM.findDOMNode(this.refs.english_list).children;
+  getEnglishList: function getEnglishList() {
+    return _reactDom2.default.findDOMNode(this.refs.english_list).children;
   },
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     e.preventDefault();
     // console.log(this.state.text);
-    let search_text = this.state.text; //state的好处是拥有历史功能？
+    var search_text = this.state.text; //state的好处是拥有历史功能？
     var english_list = this.getEnglishList();
 
     if (search_text && search_text.length != 0) {
@@ -68,7 +120,7 @@ var SRTApp = React.createClass({
       for (var index = start; index < this.state.items.length; index++) {
         var sentence = this.state.items[index].english.toLowerCase();
         if (sentence.includes(search_text.toLowerCase())) {
-          console.log(`${ this.state.current_index } :index:${ index }`);
+          console.log(this.state.current_index + ' :index:' + index);
           if (index == this.state.current_index) {
             continue;
           };
@@ -85,7 +137,7 @@ var SRTApp = React.createClass({
       // alert("last word");
     };
   },
-  play_sentence: function (index) {
+  play_sentence: function play_sentence(index) {
     if (index == NaN) {
       throw 'params index error in play_sentence().';
     };
@@ -96,93 +148,95 @@ var SRTApp = React.createClass({
       english.click();
     }
   },
-  play_current: function () {
+  play_current: function play_current() {
     this.play_sentence(this.state.current_index);
   },
-  prev_sentence: function () {
+  prev_sentence: function prev_sentence() {
     this.play_sentence(this.state.current_index - 1);
   },
-  next_sentence: function () {
+  next_sentence: function next_sentence() {
     this.play_sentence(this.state.current_index + 1);
   },
-  change_current_sentence: function (item) {
+  change_current_sentence: function change_current_sentence(item) {
     // console.log(item);
     this.setState({ current_sentence: item });
     var index = this.state.items.indexOf(item); //一切的数据变化都集中到items中，如此，子组件的数据获取其实就根据state中的数据来！
     this.setState({ current_index: index });
   },
-  filterChange: function (e) {
+  filterChange: function filterChange(e) {
     this.setState({ textFilter: e.target.value });
   },
-  handleFilter: function (e) {
+  handleFilter: function handleFilter(e) {
+    var _this = this;
+
     e.preventDefault();
-    var newArray = srtArray.filter(item => {
-      return item.english.includes(this.state.textFilter);
+    var newArray = srtArray.filter(function (item) {
+      return item.english.includes(_this.state.textFilter);
     });
     // console.log(newArray.slice(2))
     this.setState({ items: newArray });
   },
-  currentSentenceClick: function (e) {
+  currentSentenceClick: function currentSentenceClick(e) {
     this.play_current();
   },
-  hideOrShowSubtitle: function (e) {
+  hideOrShowSubtitle: function hideOrShowSubtitle(e) {
     e.preventDefault();
     this.setState({ hide: !this.state.hide });
   },
-  render: function () {
-    return React.createElement(
-      'div',
-      null,
-      React.createElement(
+  render: function render() {
+    return _react2.default.createElement(
+      _MuiThemeProvider2.default,
+      { muiTheme: (0, _getMuiTheme2.default)() },
+      _react2.default.createElement(
         'form',
-        { class: 'form-inline' },
-        React.createElement(
+        { 'class': 'form-inline' },
+        _react2.default.createElement(
           'div',
-          { class: 'form-group' },
-          React.createElement(
-            'button',
-            { onClick: this.hideOrShowSubtitle, class: 'btn btn-primary', id: 'hideorshow' },
-            this.state.hide ? '隐藏字幕' : '显示字幕'
-          ),
-          React.createElement(PaperButton, { type: PaperButton.Types.FLAT, label: 'Default' })
+          { 'class': 'form-group' },
+          _react2.default.createElement(_RaisedButton2.default, { label: this.state.hide ? '隐藏字幕' : '显示字幕', onClick: this.hideOrShowSubtitle }),
+          _react2.default.createElement(_Toggle2.default, {
+            label: '显示字幕',
+            defaultToggled: true,
+            style: styles.toggle
+          })
         )
       ),
-      React.createElement(
+      _react2.default.createElement(
         'form',
         { onSubmit: this.handleSubmit },
-        React.createElement(
+        _react2.default.createElement(
           'label',
           null,
           '搜索：'
         ),
-        React.createElement('input', { onChange: this.onChange, value: this.state.text }),
-        React.createElement(
+        _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
+        _react2.default.createElement(
           'button',
           { className: 'btn btn-default' },
           '下'
         )
       ),
-      React.createElement(
+      _react2.default.createElement(
         'form',
         { onSubmit: this.handleFilter },
-        React.createElement(
+        _react2.default.createElement(
           'label',
           { title: '过滤后只会显示那些包含过滤词的句子' },
           '过滤：'
         ),
-        React.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
+        _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
       ),
-      React.createElement(CurrentSentence, {
+      _react2.default.createElement(CurrentSentence, {
         current_sentence: this.state.current_sentence,
         prev_sentence: this.prev_sentence,
         next_sentence: this.next_sentence,
         currentSentenceClick: this.currentSentenceClick }),
-      React.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence, hide: this.state.hide })
+      _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence, hide: this.state.hide })
     );
   }
 });
 
-var srtrendered = ReactDOM.render(React.createElement(SRTApp, null), document.getElementById('srtapp_container'));
+var srtrendered = _reactDom2.default.render(_react2.default.createElement(SRTApp, null), document.getElementById('srtapp_container'));
 
 //按键控制
 $(window).keydown(function (e) {
