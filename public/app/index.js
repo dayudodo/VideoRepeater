@@ -2,6 +2,8 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var mui = require('material-ui');
+var PaperButton = mui.PaperButton;
 
 var Timer = require('./timer');
 var CurrentSentence = require('./currentSentence');
@@ -43,8 +45,8 @@ var SRTApp = React.createClass({
       textFilter: '',
       current_index: -1,
       prev_search_text: '',
-      current_sentence: new Object()
-    };
+      current_sentence: new Object(),
+      hide: false };
   },
   onChange: function (e) {
     this.setState({ text: e.target.value });
@@ -125,8 +127,7 @@ var SRTApp = React.createClass({
   },
   hideOrShowSubtitle: function (e) {
     e.preventDefault();
-    // this.setState({hide: !this.state.hide});
-    hideSubtitle = !hideSubtitle;
+    this.setState({ hide: !this.state.hide });
   },
   render: function () {
     return React.createElement(
@@ -141,8 +142,9 @@ var SRTApp = React.createClass({
           React.createElement(
             'button',
             { onClick: this.hideOrShowSubtitle, class: 'btn btn-primary', id: 'hideorshow' },
-            hideSubtitle ? '隐藏字幕' : '显示'
-          )
+            this.state.hide ? '隐藏字幕' : '显示字幕'
+          ),
+          React.createElement(PaperButton, { type: PaperButton.Types.FLAT, label: 'Default' })
         )
       ),
       React.createElement(
@@ -175,7 +177,7 @@ var SRTApp = React.createClass({
         prev_sentence: this.prev_sentence,
         next_sentence: this.next_sentence,
         currentSentenceClick: this.currentSentenceClick }),
-      React.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence })
+      React.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence, hide: this.state.hide })
     );
   }
 });
