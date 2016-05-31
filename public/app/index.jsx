@@ -1,12 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import {deepOrange500} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import Drawer from 'material-ui/Drawer';
 
+injectTapEventPlugin();
 
 
 var Timer = require('./timer');
@@ -50,7 +56,8 @@ var SRTApp= React.createClass({
       , current_index: -1
       , prev_search_text: ''
       , current_sentence: new Object()
-      , hide: false };
+      , value: 1
+      , open:false };
   },
   onChange: function(e) {
     this.setState({text: e.target.value});
@@ -115,27 +122,70 @@ var SRTApp= React.createClass({
   },
   handleFilter:function(e){
     e.preventDefault();
+    this.setState({current_sentence: ''})
     var newArray= srtArray.filter((item)=>{
-      return item.english.includes(this.state.textFilter);
+      return item.english.toLowerCase().includes(this.state.textFilter.toLowerCase());
     });
     // console.log(newArray.slice(2))
     this.setState({items: newArray});
+  },
+  handleSelect:function(event, index, value){
+    this.setState({value})
+  },
+  handleToggle: function(){ 
+    this.setState({open: !this.state.open})
+  },
+  handleClose: function(){
+    this.setState({open: false})
   },
   currentSentenceClick:function(e){
     this.play_current();
   },
   hideOrShowSubtitle:function(e){
     e.preventDefault();
-    // this.setState({hide: !this.state.hide});
-    $(ReactDOM.findDOMNode(this.refs.english_list)).toggleClass('hidden'); //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
+    this.setState({hide: !this.state.hide});
+    $(ReactDOM.findDOMNode(this.refs.english_list)).toggleClass('hidden'); 
+    //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
+    //不过只把hide作为布尔变量来使用有点儿浪费的赶脚
   },
   render: function(){
+    const styles = {
+      customWidth: {
+        width: 200,
+      },
+    };
     return (
       <MuiThemeProvider muiTheme={getMuiTheme()}>
        <div>
           <form class="form-inline">
             <div class="form-group">
             <button onClick={this.hideOrShowSubtitle} class="btn btn-primary" id="hideorshow" >{ this.state.hide? '显示字幕': '隐藏字幕'}</button>
+            <SelectField
+                  value={this.state.value}
+                  onChange={this.handleSelect}
+                  style={ styles.customWidth }
+                >
+                  <MenuItem value={1} primaryText="Custom width" />
+                  <MenuItem value={2} primaryText="Every Night" />
+                  <MenuItem value={3} primaryText="Weeknights" />
+                  <MenuItem value={4} primaryText="Weekends" />
+                  <MenuItem value={5} primaryText="Weekly" />
+            </SelectField>
+
+            <RaisedButton
+              label="Open Drawer"
+              onTouchTap={this.handleToggle}
+            />
+            <Drawer
+              docked={false}
+              width={200}
+              open={this.state.open}
+              onRequestChange={(open) => this.setState({open})}
+            >
+              <MenuItem onTouchTap={this.handleClose}>Menu Item</MenuItem>
+              <MenuItem onTouchTap={this.handleClose}>Menu Item 2</MenuItem>
+
+            </Drawer>
             </div>
           </form>
           <form onSubmit={this.handleSubmit}>

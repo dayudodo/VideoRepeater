@@ -8,6 +8,18 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _reactTapEventPlugin = require('react-tap-event-plugin');
+
+var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
+
+var _getMuiTheme = require('material-ui/styles/getMuiTheme');
+
+var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+var _MuiThemeProvider = require('material-ui/styles/MuiThemeProvider');
+
+var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
 var _RaisedButton = require('material-ui/RaisedButton');
 
 var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
@@ -22,15 +34,21 @@ var _FlatButton = require('material-ui/FlatButton');
 
 var _FlatButton2 = _interopRequireDefault(_FlatButton);
 
-var _getMuiTheme = require('material-ui/styles/getMuiTheme');
+var _SelectField = require('material-ui/SelectField');
 
-var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+var _SelectField2 = _interopRequireDefault(_SelectField);
 
-var _MuiThemeProvider = require('material-ui/styles/MuiThemeProvider');
+var _MenuItem = require('material-ui/MenuItem');
 
-var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+var _MenuItem2 = _interopRequireDefault(_MenuItem);
+
+var _Drawer = require('material-ui/Drawer');
+
+var _Drawer2 = _interopRequireDefault(_Drawer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _reactTapEventPlugin2.default)();
 
 var Timer = require('./timer');
 var CurrentSentence = require('./currentSentence');
@@ -75,7 +93,8 @@ var SRTApp = _react2.default.createClass({
       current_index: -1,
       prev_search_text: '',
       current_sentence: new Object(),
-      hide: false };
+      value: 1,
+      open: false };
   },
   onChange: function onChange(e) {
     this.setState({ text: e.target.value });
@@ -147,21 +166,40 @@ var SRTApp = _react2.default.createClass({
     var _this = this;
 
     e.preventDefault();
+    this.setState({ current_sentence: '' });
     var newArray = srtArray.filter(function (item) {
-      return item.english.includes(_this.state.textFilter);
+      return item.english.toLowerCase().includes(_this.state.textFilter.toLowerCase());
     });
     // console.log(newArray.slice(2))
     this.setState({ items: newArray });
+  },
+  handleSelect: function handleSelect(event, index, value) {
+    this.setState({ value: value });
+  },
+  handleToggle: function handleToggle() {
+    this.setState({ open: !this.state.open });
+  },
+  handleClose: function handleClose() {
+    this.setState({ open: false });
   },
   currentSentenceClick: function currentSentenceClick(e) {
     this.play_current();
   },
   hideOrShowSubtitle: function hideOrShowSubtitle(e) {
     e.preventDefault();
-    // this.setState({hide: !this.state.hide});
-    $(_reactDom2.default.findDOMNode(this.refs.english_list)).toggleClass('hidden'); //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
+    this.setState({ hide: !this.state.hide });
+    $(_reactDom2.default.findDOMNode(this.refs.english_list)).toggleClass('hidden');
+    //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
+    //不过只把hide作为布尔变量来使用有点儿浪费的赶脚
   },
   render: function render() {
+    var _this2 = this;
+
+    var styles = {
+      customWidth: {
+        width: 200
+      }
+    };
     return _react2.default.createElement(
       _MuiThemeProvider2.default,
       { muiTheme: (0, _getMuiTheme2.default)() },
@@ -178,6 +216,44 @@ var SRTApp = _react2.default.createClass({
               'button',
               { onClick: this.hideOrShowSubtitle, 'class': 'btn btn-primary', id: 'hideorshow' },
               this.state.hide ? '显示字幕' : '隐藏字幕'
+            ),
+            _react2.default.createElement(
+              _SelectField2.default,
+              {
+                value: this.state.value,
+                onChange: this.handleSelect,
+                style: styles.customWidth
+              },
+              _react2.default.createElement(_MenuItem2.default, { value: 1, primaryText: 'Custom width' }),
+              _react2.default.createElement(_MenuItem2.default, { value: 2, primaryText: 'Every Night' }),
+              _react2.default.createElement(_MenuItem2.default, { value: 3, primaryText: 'Weeknights' }),
+              _react2.default.createElement(_MenuItem2.default, { value: 4, primaryText: 'Weekends' }),
+              _react2.default.createElement(_MenuItem2.default, { value: 5, primaryText: 'Weekly' })
+            ),
+            _react2.default.createElement(_RaisedButton2.default, {
+              label: 'Open Drawer',
+              onTouchTap: this.handleToggle
+            }),
+            _react2.default.createElement(
+              _Drawer2.default,
+              {
+                docked: false,
+                width: 200,
+                open: this.state.open,
+                onRequestChange: function onRequestChange(open) {
+                  return _this2.setState({ open: open });
+                }
+              },
+              _react2.default.createElement(
+                _MenuItem2.default,
+                { onTouchTap: this.handleClose },
+                'Menu Item'
+              ),
+              _react2.default.createElement(
+                _MenuItem2.default,
+                { onTouchTap: this.handleClose },
+                'Menu Item 2'
+              )
             )
           )
         ),

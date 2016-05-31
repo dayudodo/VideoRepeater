@@ -16,9 +16,10 @@ var CurrentSentence = React.createClass({
 		this.props.currentSentenceClick();
 	},
 	render() {
+		var english= (this.props.current_sentence)? this.props.current_sentence.english: ''
 		return  <div className="col-sm-12 col-md-12 col-lg-12">
 				    <div className="alert alert-success col-md-10 col-lg-10" onClick={ this.props.currentSentenceClick } id="current_sentence">
-				      {this.props.current_sentence.english}
+				      { english }
 				    </div>
 				    <button className="btn btn-info btn-sm" onClick={ this.prev_sentence } >上句</button>
 				    <button className="btn btn-info btn-sm" onClick={ this.next_sentence } >下句</button>

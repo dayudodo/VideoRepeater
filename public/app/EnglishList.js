@@ -18,7 +18,7 @@ var LiItem = _react2.default.createClass({
 	render: function render() {
 		return _react2.default.createElement(
 			'li',
-			{ onClick: this.props.onClick },
+			{ onClick: this.props.onClick, title: 'chinese' },
 			this.props.item.english
 		);
 	}

@@ -8,7 +8,7 @@ var LiItem= React.createClass({
 		return false; //有状态的组件其实比下面无状态组件的速度要更快，无状态的话每次都会生成！
 	},
 	render(){
-		return <li onClick={this.props.onClick }>{this.props.item.english}</li>
+		return <li onClick={this.props.onClick } title="chinese">{this.props.item.english}</li>
 	}
 })
 // var LiItem = function(props){

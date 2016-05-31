@@ -20,13 +20,14 @@ var CurrentSentence = React.createClass({
 		this.props.currentSentenceClick();
 	},
 	render: function render() {
+		var english = this.props.current_sentence ? this.props.current_sentence.english : '';
 		return React.createElement(
 			'div',
 			{ className: 'col-sm-12 col-md-12 col-lg-12' },
 			React.createElement(
 				'div',
 				{ className: 'alert alert-success col-md-10 col-lg-10', onClick: this.props.currentSentenceClick, id: 'current_sentence' },
-				this.props.current_sentence.english
+				english
 			),
 			React.createElement(
 				'button',
