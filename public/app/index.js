@@ -8,6 +8,28 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _RaisedButton = require('material-ui/RaisedButton');
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+var _Dialog = require('material-ui/Dialog');
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _colors = require('material-ui/styles/colors');
+
+var _FlatButton = require('material-ui/FlatButton');
+
+var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _getMuiTheme = require('material-ui/styles/getMuiTheme');
+
+var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+var _MuiThemeProvider = require('material-ui/styles/MuiThemeProvider');
+
+var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Timer = require('./timer');
@@ -141,52 +163,56 @@ var SRTApp = _react2.default.createClass({
   },
   render: function render() {
     return _react2.default.createElement(
-      'div',
-      null,
+      _MuiThemeProvider2.default,
+      { muiTheme: (0, _getMuiTheme2.default)() },
       _react2.default.createElement(
-        'form',
-        { 'class': 'form-inline' },
+        'div',
+        null,
         _react2.default.createElement(
-          'div',
-          { 'class': 'form-group' },
+          'form',
+          { 'class': 'form-inline' },
+          _react2.default.createElement(
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'button',
+              { onClick: this.hideOrShowSubtitle, 'class': 'btn btn-primary', id: 'hideorshow' },
+              this.state.hide ? '显示字幕' : '隐藏字幕'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'form',
+          { onSubmit: this.handleSubmit },
+          _react2.default.createElement(
+            'label',
+            null,
+            '搜索：'
+          ),
+          _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
           _react2.default.createElement(
             'button',
-            { onClick: this.hideOrShowSubtitle, 'class': 'btn btn-primary', id: 'hideorshow' },
-            this.state.hide ? '显示字幕' : '隐藏字幕'
+            { className: 'btn btn-default' },
+            '下'
           )
-        )
-      ),
-      _react2.default.createElement(
-        'form',
-        { onSubmit: this.handleSubmit },
-        _react2.default.createElement(
-          'label',
-          null,
-          '搜索：'
         ),
-        _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
         _react2.default.createElement(
-          'button',
-          { className: 'btn btn-default' },
-          '下'
-        )
-      ),
-      _react2.default.createElement(
-        'form',
-        { onSubmit: this.handleFilter },
-        _react2.default.createElement(
-          'label',
-          { title: '过滤后只会显示那些包含过滤词的句子' },
-          '过滤：'
+          'form',
+          { onSubmit: this.handleFilter },
+          _react2.default.createElement(
+            'label',
+            { title: '过滤后只会显示那些包含过滤词的句子' },
+            '过滤：'
+          ),
+          _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
         ),
-        _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
-      ),
-      _react2.default.createElement(CurrentSentence, {
-        current_sentence: this.state.current_sentence,
-        prev_sentence: this.prev_sentence,
-        next_sentence: this.next_sentence,
-        currentSentenceClick: this.currentSentenceClick }),
-      _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence })
+        _react2.default.createElement(CurrentSentence, {
+          current_sentence: this.state.current_sentence,
+          prev_sentence: this.prev_sentence,
+          next_sentence: this.next_sentence,
+          currentSentenceClick: this.currentSentenceClick }),
+        _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence })
+      )
     );
   }
 });

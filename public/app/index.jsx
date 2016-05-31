@@ -1,5 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import {deepOrange500} from 'material-ui/styles/colors';
+import FlatButton from 'material-ui/FlatButton';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 
 
 var Timer = require('./timer');
@@ -124,6 +131,7 @@ var SRTApp= React.createClass({
   },
   render: function(){
     return (
+      <MuiThemeProvider muiTheme={getMuiTheme()}>
        <div>
           <form class="form-inline">
             <div class="form-group">
@@ -146,6 +154,7 @@ var SRTApp= React.createClass({
             currentSentenceClick={this.currentSentenceClick} />
           <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } />
         </div>
+        </MuiThemeProvider>
     );
   }
 });
