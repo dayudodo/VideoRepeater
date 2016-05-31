@@ -1,17 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import Toggle from 'material-ui/Toggle';
-import MyAwesomeReactComponent from './MyAwesomeReactComponent';
-
-import Main from './material-main'
-
-injectTapEventPlugin();
 
 var Timer = require('./timer');
 var CurrentSentence= require('./currentSentence');
@@ -44,17 +33,6 @@ var srtArray=[];
 for(var index in data){
 	srtArray= srtArray.concat(data[index]);
 }
-
-ReactDOM.render(<Main />, document.getElementById('material'));
-
-const styles = {
-  block: {
-    maxWidth: 250,
-  },
-  toggle: {
-    marginBottom: 16,
-  },
-};
 
 var SRTApp= React.createClass({
   getInitialState: function() {
@@ -141,22 +119,15 @@ var SRTApp= React.createClass({
   },
   hideOrShowSubtitle:function(e){
     e.preventDefault();
-    this.setState({hide: !this.state.hide});
+    // this.setState({hide: !this.state.hide});
+    $(ReactDOM.findDOMNode(this.refs.english_list)).toggleClass('hidden'); //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
   },
   render: function(){
     return (
-      <MuiThemeProvider  muiTheme={getMuiTheme()}>
-        <div>
+       <div>
           <form class="form-inline">
             <div class="form-group">
-              
-                 <RaisedButton label={ this.state.hide? '隐藏字幕':'显示字幕'} onClick={this.hideOrShowSubtitle}/>
-              
-                <Toggle
-                      label="显示字幕"
-                      defaultToggled={true}
-                      style={styles.toggle}
-                    />
+            <button onClick={this.hideOrShowSubtitle} class="btn btn-primary" id="hideorshow" >{ this.state.hide? '显示字幕': '隐藏字幕'}</button>
             </div>
           </form>
           <form onSubmit={this.handleSubmit}>
@@ -173,9 +144,8 @@ var SRTApp= React.createClass({
             prev_sentence={this.prev_sentence} 
             next_sentence={this.next_sentence} 
             currentSentenceClick={this.currentSentenceClick} />
-          <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } hide={this.state.hide}/>
+          <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } />
         </div>
-      </MuiThemeProvider>
     );
   }
 });

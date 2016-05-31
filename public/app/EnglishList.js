@@ -32,11 +32,11 @@ var EnglishList = _react2.default.createClass({
 	componentDidMount: function componentDidMount() {
 		console.log('did mount');
 	},
-
-	// shouldComponentUpdate(nextProps, nextState){
-	// 	// return false;
-	// 	return (this.props.items != nextProps.items)  //只有当items改变的时候才会re-render! 其它情况的state改变并不会影响到这儿！
-	// },
+	shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+		// return false;
+		// return (this.props.hide != nextProps.hide)
+		return this.props.items != nextProps.items; //只有当items改变的时候才会re-render! 其它情况的state改变并不会影响到这儿！
+	},
 	handleClick: function handleClick(item) {
 		MediaPlayer(item.startTime / 1000, item.endTime / 1000);
 		// ReactDOM.render(
@@ -50,7 +50,7 @@ var EnglishList = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'ul',
-			{ id: 'english_list', className: this.props.hide ? 'hidden' : '' },
+			null,
 			this.props.items.map(function (item) {
 				return _react2.default.createElement(LiItem, { key: item.startTime, onClick: _this.handleClick.bind(null, item), item: item });
 			})

@@ -8,41 +8,7 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactTapEventPlugin = require('react-tap-event-plugin');
-
-var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
-
-var _getMuiTheme = require('material-ui/styles/getMuiTheme');
-
-var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-var _MuiThemeProvider = require('material-ui/styles/MuiThemeProvider');
-
-var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
-var _FlatButton = require('material-ui/FlatButton');
-
-var _FlatButton2 = _interopRequireDefault(_FlatButton);
-
-var _RaisedButton = require('material-ui/RaisedButton');
-
-var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-var _Toggle = require('material-ui/Toggle');
-
-var _Toggle2 = _interopRequireDefault(_Toggle);
-
-var _MyAwesomeReactComponent = require('./MyAwesomeReactComponent');
-
-var _MyAwesomeReactComponent2 = _interopRequireDefault(_MyAwesomeReactComponent);
-
-var _materialMain = require('./material-main');
-
-var _materialMain2 = _interopRequireDefault(_materialMain);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _reactTapEventPlugin2.default)();
 
 var Timer = require('./timer');
 var CurrentSentence = require('./currentSentence');
@@ -75,17 +41,6 @@ var srtArray = [];
 for (var index in data) {
   srtArray = srtArray.concat(data[index]);
 }
-
-_reactDom2.default.render(_react2.default.createElement(_materialMain2.default, null), document.getElementById('material'));
-
-var styles = {
-  block: {
-    maxWidth: 250
-  },
-  toggle: {
-    marginBottom: 16
-  }
-};
 
 var SRTApp = _react2.default.createClass({
   displayName: 'SRTApp',
@@ -181,61 +136,57 @@ var SRTApp = _react2.default.createClass({
   },
   hideOrShowSubtitle: function hideOrShowSubtitle(e) {
     e.preventDefault();
-    this.setState({ hide: !this.state.hide });
+    // this.setState({hide: !this.state.hide});
+    $(_reactDom2.default.findDOMNode(this.refs.english_list)).toggleClass('hidden'); //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
   },
   render: function render() {
     return _react2.default.createElement(
-      _MuiThemeProvider2.default,
-      { muiTheme: (0, _getMuiTheme2.default)() },
+      'div',
+      null,
       _react2.default.createElement(
-        'div',
-        null,
+        'form',
+        { 'class': 'form-inline' },
         _react2.default.createElement(
-          'form',
-          { 'class': 'form-inline' },
-          _react2.default.createElement(
-            'div',
-            { 'class': 'form-group' },
-            _react2.default.createElement(_RaisedButton2.default, { label: this.state.hide ? '隐藏字幕' : '显示字幕', onClick: this.hideOrShowSubtitle }),
-            _react2.default.createElement(_Toggle2.default, {
-              label: '显示字幕',
-              defaultToggled: true,
-              style: styles.toggle
-            })
-          )
-        ),
-        _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleSubmit },
-          _react2.default.createElement(
-            'label',
-            null,
-            '搜索：'
-          ),
-          _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
+          'div',
+          { 'class': 'form-group' },
           _react2.default.createElement(
             'button',
-            { className: 'btn btn-default' },
-            '下'
+            { onClick: this.hideOrShowSubtitle, 'class': 'btn btn-primary', id: 'hideorshow' },
+            this.state.hide ? '显示字幕' : '隐藏字幕'
           )
-        ),
+        )
+      ),
+      _react2.default.createElement(
+        'form',
+        { onSubmit: this.handleSubmit },
         _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleFilter },
-          _react2.default.createElement(
-            'label',
-            { title: '过滤后只会显示那些包含过滤词的句子' },
-            '过滤：'
-          ),
-          _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
+          'label',
+          null,
+          '搜索：'
         ),
-        _react2.default.createElement(CurrentSentence, {
-          current_sentence: this.state.current_sentence,
-          prev_sentence: this.prev_sentence,
-          next_sentence: this.next_sentence,
-          currentSentenceClick: this.currentSentenceClick }),
-        _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence, hide: this.state.hide })
-      )
+        _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
+        _react2.default.createElement(
+          'button',
+          { className: 'btn btn-default' },
+          '下'
+        )
+      ),
+      _react2.default.createElement(
+        'form',
+        { onSubmit: this.handleFilter },
+        _react2.default.createElement(
+          'label',
+          { title: '过滤后只会显示那些包含过滤词的句子' },
+          '过滤：'
+        ),
+        _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
+      ),
+      _react2.default.createElement(CurrentSentence, {
+        current_sentence: this.state.current_sentence,
+        prev_sentence: this.prev_sentence,
+        next_sentence: this.next_sentence,
+        currentSentenceClick: this.currentSentenceClick }),
+      _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence })
     );
   }
 });

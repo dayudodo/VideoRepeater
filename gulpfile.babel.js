@@ -10,9 +10,6 @@ var plumber = require('gulp-plumber');
 var lessOptions = {  
     relativeUrls: true
 };
-// var babelOptions = {  
-//     whitelist: ['react', 'strict', 'es6.destructuring']
-// };
 
 gulp.task("default", ["server"]);  
 gulp.task("watch", ["server"]);  
