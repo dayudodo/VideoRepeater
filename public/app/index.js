@@ -196,9 +196,8 @@ var SRTApp = _react2.default.createClass({
     var _this2 = this;
 
     var styles = {
-      customWidth: {
-        width: 200
-      }
+      customWidth: { width: 200 },
+      hideBtnWidth: { margin: 12 }
     };
     return _react2.default.createElement(
       _MuiThemeProvider2.default,
@@ -212,11 +211,7 @@ var SRTApp = _react2.default.createClass({
           _react2.default.createElement(
             'div',
             { 'class': 'form-group' },
-            _react2.default.createElement(
-              'button',
-              { onClick: this.hideOrShowSubtitle, 'class': 'btn btn-primary', id: 'hideorshow' },
-              this.state.hide ? '显示字幕' : '隐藏字幕'
-            ),
+            _react2.default.createElement(_RaisedButton2.default, { label: this.state.hide ? '显示字幕' : '隐藏字幕', onClick: this.hideOrShowSubtitle, style: styles.hideBtnWidth }),
             _react2.default.createElement(
               _SelectField2.default,
               {

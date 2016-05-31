@@ -150,16 +150,15 @@ var SRTApp= React.createClass({
   },
   render: function(){
     const styles = {
-      customWidth: {
-        width: 200,
-      },
+      customWidth: { width: 200, },
+      hideBtnWidth:{ margin: 12, },
     };
     return (
       <MuiThemeProvider muiTheme={getMuiTheme()}>
        <div>
           <form class="form-inline">
             <div class="form-group">
-            <button onClick={this.hideOrShowSubtitle} class="btn btn-primary" id="hideorshow" >{ this.state.hide? '显示字幕': '隐藏字幕'}</button>
+            <RaisedButton label={ this.state.hide? '显示字幕': '隐藏字幕'} onClick={this.hideOrShowSubtitle} style={styles.hideBtnWidth}/>
             <SelectField
                   value={this.state.value}
                   onChange={this.handleSelect}
