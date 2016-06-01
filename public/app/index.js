@@ -1,5 +1,7 @@
 'use strict';
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -46,6 +48,10 @@ var _Drawer = require('material-ui/Drawer');
 
 var _Drawer2 = _interopRequireDefault(_Drawer);
 
+var _TextField = require('material-ui/TextField');
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _reactTapEventPlugin2.default)();
@@ -71,9 +77,15 @@ vid.src = videoFileName;
 // 不然下面的items获取不到值。
 var data = srt(fs.readFileSync(srtFileName, 'utf-8'));
 for (var index in data) {
-  data[index]["english"] = data[index].text.split('\n')[0];
-  data[index]["chinese"] = data[index].text.split('\n')[1];
-  data[index]["id"] = index;
+  var _data$index$text$spli = data[index].text.split('\n');
+  // data[index]["english"]= data[index].text.split('\n')[0]
+  // data[index]["chinese"]= data[index].text.split('\n')[1]
+
+
+  var _data$index$text$spli2 = _slicedToArray(_data$index$text$spli, 2);
+
+  data[index]["english"] = _data$index$text$spli2[0];
+  data[index]["chinese"] = _data$index$text$spli2[1];
 }
 
 // 将数据转化成数组，以供angular的filter使用。
@@ -94,15 +106,16 @@ var SRTApp = _react2.default.createClass({
       prev_search_text: '',
       current_sentence: new Object(),
       value: 1,
-      open: false };
+      open: false,
+      repeat_times: 1 };
   },
-  onChange: function onChange(e) {
+  onSearchChange: function onSearchChange(e) {
     this.setState({ text: e.target.value });
   },
   getEnglishList: function getEnglishList() {
     return _reactDom2.default.findDOMNode(this.refs.english_list).children;
   },
-  handleSubmit: function handleSubmit(e) {
+  handleSearchSubmit: function handleSearchSubmit(e) {
     e.preventDefault();
     // console.log(this.state.text);
     var search_text = this.state.text; //state的好处是拥有历史功能？
@@ -122,7 +135,6 @@ var SRTApp = _react2.default.createClass({
           };
           english_list[index].click(); //或许是react好的地方，因为这个click已经写好了，直接复用。
           this.setState({ current_index: index });
-
           break;
         } else {
           if (this.state.items.length - 1 == index) {
@@ -137,8 +149,7 @@ var SRTApp = _react2.default.createClass({
     if (index == NaN) {
       throw 'params index error in play_sentence().';
     };
-    var english_list = this.getEnglishList();
-    var english = english_list[index];
+    var english = this.getEnglishList()[index];
     if (english) {
       this.setState({ current_index: index });
       english.click();
@@ -162,26 +173,6 @@ var SRTApp = _react2.default.createClass({
   filterChange: function filterChange(e) {
     this.setState({ textFilter: e.target.value });
   },
-  handleFilter: function handleFilter(e) {
-    var _this = this;
-
-    e.preventDefault();
-    this.setState({ current_sentence: '' });
-    var newArray = srtArray.filter(function (item) {
-      return item.english.toLowerCase().includes(_this.state.textFilter.toLowerCase());
-    });
-    // console.log(newArray.slice(2))
-    this.setState({ items: newArray });
-  },
-  handleSelect: function handleSelect(event, index, value) {
-    this.setState({ value: value });
-  },
-  handleToggle: function handleToggle() {
-    this.setState({ open: !this.state.open });
-  },
-  handleClose: function handleClose() {
-    this.setState({ open: false });
-  },
   currentSentenceClick: function currentSentenceClick(e) {
     this.play_current();
   },
@@ -192,11 +183,33 @@ var SRTApp = _react2.default.createClass({
     //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
     //不过只把hide作为布尔变量来使用有点儿浪费的赶脚
   },
+  handleFilter: function handleFilter(e) {
+    var _this = this;
+
+    e.preventDefault();
+    this.setState({ current_sentence: '' });
+    var newArray = srtArray.filter(function (item) {
+      return item.english.toLowerCase().includes(_this.state.textFilter.toLowerCase());
+    });
+    // console.log(newArray.slice(2,5))
+    this.setState({ items: newArray });
+  },
+  handleToggle: function handleToggle() {
+    this.setState({ open: !this.state.open });
+  },
+  handleClose: function handleClose() {
+    this.setState({ open: false });
+  },
+  handleRepeatTimes: function handleRepeatTimes(event, index, value) {
+    this.setState({ repeat_times: value });
+    // console.log(value)
+    G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
+  },
   render: function render() {
     var _this2 = this;
 
     var styles = {
-      customWidth: { width: 200 },
+      customWidth: { width: 100 },
       hideBtnWidth: { margin: 12 }
     };
     return _react2.default.createElement(
@@ -211,22 +224,25 @@ var SRTApp = _react2.default.createClass({
           _react2.default.createElement(
             'div',
             { 'class': 'form-group' },
-            _react2.default.createElement(_RaisedButton2.default, { label: this.state.hide ? '显示字幕' : '隐藏字幕', onClick: this.hideOrShowSubtitle, style: styles.hideBtnWidth }),
+            _react2.default.createElement(
+              'label',
+              null,
+              '重复次数：'
+            ),
             _react2.default.createElement(
               _SelectField2.default,
               {
-                value: this.state.value,
-                onChange: this.handleSelect,
+                value: this.state.repeat_times,
+                onChange: this.handleRepeatTimes,
                 style: styles.customWidth
               },
-              _react2.default.createElement(_MenuItem2.default, { value: 1, primaryText: 'Custom width' }),
-              _react2.default.createElement(_MenuItem2.default, { value: 2, primaryText: 'Every Night' }),
-              _react2.default.createElement(_MenuItem2.default, { value: 3, primaryText: 'Weeknights' }),
-              _react2.default.createElement(_MenuItem2.default, { value: 4, primaryText: 'Weekends' }),
-              _react2.default.createElement(_MenuItem2.default, { value: 5, primaryText: 'Weekly' })
+              _react2.default.createElement(_MenuItem2.default, { value: 1, primaryText: '1' }),
+              _react2.default.createElement(_MenuItem2.default, { value: 2, primaryText: '2' }),
+              _react2.default.createElement(_MenuItem2.default, { value: 3, primaryText: '3' })
             ),
+            _react2.default.createElement(_RaisedButton2.default, { label: this.state.hide ? '显示字幕' : '隐藏字幕', onClick: this.hideOrShowSubtitle, style: styles.hideBtnWidth }),
             _react2.default.createElement(_RaisedButton2.default, {
-              label: 'Open Drawer',
+              label: '设置',
               onTouchTap: this.handleToggle
             }),
             _react2.default.createElement(
@@ -242,7 +258,7 @@ var SRTApp = _react2.default.createClass({
               _react2.default.createElement(
                 _MenuItem2.default,
                 { onTouchTap: this.handleClose },
-                'Menu Item'
+                'Close'
               ),
               _react2.default.createElement(
                 _MenuItem2.default,
@@ -254,13 +270,17 @@ var SRTApp = _react2.default.createClass({
         ),
         _react2.default.createElement(
           'form',
-          { onSubmit: this.handleSubmit },
+          { onSubmit: this.handleSearchSubmit, id: 'search_form' },
           _react2.default.createElement(
             'label',
             null,
             '搜索：'
           ),
-          _react2.default.createElement('input', { onChange: this.onChange, value: this.state.text }),
+          _react2.default.createElement(_TextField2.default, {
+            id: 'text-field-controlled',
+            value: this.state.text,
+            onChange: this.onSearchChange
+          }),
           _react2.default.createElement(
             'button',
             { className: 'btn btn-default' },
@@ -275,14 +295,21 @@ var SRTApp = _react2.default.createClass({
             { title: '过滤后只会显示那些包含过滤词的句子' },
             '过滤：'
           ),
-          _react2.default.createElement('input', { onChange: this.filterChange, value: this.state.textFilter })
+          _react2.default.createElement(_TextField2.default, {
+            id: 'filter-field-controlled',
+            value: this.state.textFilter,
+            onChange: this.filterChange
+          })
         ),
         _react2.default.createElement(CurrentSentence, {
           current_sentence: this.state.current_sentence,
           prev_sentence: this.prev_sentence,
           next_sentence: this.next_sentence,
           currentSentenceClick: this.currentSentenceClick }),
-        _react2.default.createElement(EnglishList, { items: this.state.items, ref: 'english_list', change_current_sentence: this.change_current_sentence })
+        _react2.default.createElement(EnglishList, { items: this.state.items,
+          ref: 'english_list',
+          change_current_sentence: this.change_current_sentence
+        })
       )
     );
   }
@@ -310,6 +337,10 @@ $(window).keydown(function (e) {
   };
 });
 
+// $('.english_list_class li').tooltip({
+//   my: "left top",
+//   at: "left top"
+// });
 // $("#hideorshow").click(function(){
 //   var el= $("#english_list");
 //    if (!hideSubtitle) {

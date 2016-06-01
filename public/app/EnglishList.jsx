@@ -2,16 +2,17 @@
 import React from 'react';
 var ReactDOM = require('react-dom');
 
-var LiItem= React.createClass({
+// 生成li项，单独写出来是为了设置其shouldComponentUpdate优化显示，不然当在搜索框输入文本时会非常卡！
+var ListItem= React.createClass({
 	shouldComponentUpdate(nextProps, nextState){
 		// return this.props.item != nextProps.item
 		return false; //有状态的组件其实比下面无状态组件的速度要更快，无状态的话每次都会生成！
 	},
 	render(){
-		return <li onClick={this.props.onClick } title="chinese">{this.props.item.english}</li>
+		return <li onClick={this.props.onClick } title={this.props.item.chinese}>{this.props.item.english}</li>
 	}
 })
-// var LiItem = function(props){
+// var ListItem = function(props){
 // 	return <li onClick={props.onClick }>{props.item.english}</li>
 // }
 
@@ -33,9 +34,9 @@ var EnglishList = React.createClass({
 		this.props.change_current_sentence(item);
 	},
 	render() {
-		return <ul >
+		return <ul className='english_list_class'>
 		  {this.props.items.map((item)=> {
-			  return <LiItem key={ item.startTime }  onClick={this.handleClick.bind(null,item)}  item={item}/>
+			  return <ListItem key={ item.startTime }  onClick={this.handleClick.bind(null,item)}  item={item}/>
 		})}</ul>
 	}
 });

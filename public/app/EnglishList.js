@@ -6,11 +6,12 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ReactDOM = require('react-dom'); // var React = require('react');
+var ReactDOM = require('react-dom');
 
-
-var LiItem = _react2.default.createClass({
-	displayName: 'LiItem',
+// 生成li项，单独写出来是为了设置其shouldComponentUpdate优化显示，不然当在搜索框输入文本时会非常卡！
+// var React = require('react');
+var ListItem = _react2.default.createClass({
+	displayName: 'ListItem',
 	shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
 		// return this.props.item != nextProps.item
 		return false; //有状态的组件其实比下面无状态组件的速度要更快，无状态的话每次都会生成！
@@ -18,12 +19,12 @@ var LiItem = _react2.default.createClass({
 	render: function render() {
 		return _react2.default.createElement(
 			'li',
-			{ onClick: this.props.onClick, title: 'chinese' },
+			{ onClick: this.props.onClick, title: this.props.item.chinese },
 			this.props.item.english
 		);
 	}
 });
-// var LiItem = function(props){
+// var ListItem = function(props){
 // 	return <li onClick={props.onClick }>{props.item.english}</li>
 // }
 
@@ -50,9 +51,9 @@ var EnglishList = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'ul',
-			null,
+			{ className: 'english_list_class' },
 			this.props.items.map(function (item) {
-				return _react2.default.createElement(LiItem, { key: item.startTime, onClick: _this.handleClick.bind(null, item), item: item });
+				return _react2.default.createElement(ListItem, { key: item.startTime, onClick: _this.handleClick.bind(null, item), item: item });
 			})
 		);
 	}

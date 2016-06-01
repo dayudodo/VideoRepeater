@@ -1,6 +1,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+/*
+ 当前句子的显示，当用户点击字幕时，会自动改变，已经实现点击时播放功能
+*/
 var CurrentSentence = React.createClass({
 	//按钮点击就去执行父组件中的方法好了，因为资源都在父组件之中！
 	prev_sentence:function(e){

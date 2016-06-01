@@ -11,6 +11,7 @@ import FlatButton from 'material-ui/FlatButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Drawer from 'material-ui/Drawer';
+import TextField from 'material-ui/TextField';
 
 injectTapEventPlugin();
 
@@ -36,9 +37,9 @@ vid.src=videoFileName;
 // 不然下面的items获取不到值。
 var data = srt(fs.readFileSync(srtFileName,'utf-8'));
 for(var index in data){
-	data[index]["english"]= data[index].text.split('\n')[0]
-	data[index]["chinese"]= data[index].text.split('\n')[1]
-	data[index]["id"] = index
+	// data[index]["english"]= data[index].text.split('\n')[0]
+	// data[index]["chinese"]= data[index].text.split('\n')[1]
+  [ data[index]["english"],data[index]["chinese"] ] = data[index].text.split('\n')
 }
 
 // 将数据转化成数组，以供angular的filter使用。
@@ -57,15 +58,16 @@ var SRTApp= React.createClass({
       , prev_search_text: ''
       , current_sentence: new Object()
       , value: 1
-      , open:false };
+      , open:false
+      , repeat_times: 1 };
   },
-  onChange: function(e) {
+  onSearchChange: function(e) {
     this.setState({text: e.target.value});
   },
   getEnglishList:function(){
     return ReactDOM.findDOMNode(this.refs.english_list).children;
   },
-  handleSubmit: function(e) {
+  handleSearchSubmit: function(e) {
     e.preventDefault();
     // console.log(this.state.text);
     let search_text = this.state.text; //state的好处是拥有历史功能？
@@ -85,7 +87,6 @@ var SRTApp= React.createClass({
           };
           english_list[index].click(); //或许是react好的地方，因为这个click已经写好了，直接复用。
           this.setState({current_index: index}); 
-
           break;
         }else{
           if (this.state.items.length-1 == index) {  console.log('last sentence')};
@@ -96,11 +97,11 @@ var SRTApp= React.createClass({
   },
   play_sentence:function(index){
     if (index==NaN) {throw 'params index error in play_sentence().'};
-    var english_list = this.getEnglishList();
-    var english= english_list[index]
+    var english= this.getEnglishList()[index];
     if(english){ 
       this.setState({current_index: index})
-      english.click(); }
+      english.click(); 
+    }
   },
   play_current:function(){
     this.play_sentence(this.state.current_index);
@@ -118,25 +119,7 @@ var SRTApp= React.createClass({
     this.setState({current_index: index});
   },
   filterChange:function(e){
-    this.setState({textFilter: e.target.value})
-  },
-  handleFilter:function(e){
-    e.preventDefault();
-    this.setState({current_sentence: ''})
-    var newArray= srtArray.filter((item)=>{
-      return item.english.toLowerCase().includes(this.state.textFilter.toLowerCase());
-    });
-    // console.log(newArray.slice(2))
-    this.setState({items: newArray});
-  },
-  handleSelect:function(event, index, value){
-    this.setState({value})
-  },
-  handleToggle: function(){ 
-    this.setState({open: !this.state.open})
-  },
-  handleClose: function(){
-    this.setState({open: false})
+    this.setState({textFilter: e.target.value});
   },
   currentSentenceClick:function(e){
     this.play_current();
@@ -148,9 +131,29 @@ var SRTApp= React.createClass({
     //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
     //不过只把hide作为布尔变量来使用有点儿浪费的赶脚
   },
+  handleFilter:function(e){
+    e.preventDefault();
+    this.setState({current_sentence: ''})
+    var newArray= srtArray.filter((item)=>{
+      return item.english.toLowerCase().includes(this.state.textFilter.toLowerCase());
+    });
+    // console.log(newArray.slice(2,5))
+    this.setState({items: newArray});
+  },
+  handleToggle: function(){ 
+    this.setState({open: !this.state.open})
+  },
+  handleClose: function(){
+    this.setState({open: false})
+  },
+  handleRepeatTimes:function(event, index, value){
+    this.setState({repeat_times: value})
+    // console.log(value)
+    G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
+  },
   render: function(){
     const styles = {
-      customWidth: { width: 200, },
+      customWidth: { width: 100, },
       hideBtnWidth:{ margin: 12, },
     };
     return (
@@ -158,50 +161,61 @@ var SRTApp= React.createClass({
        <div>
           <form class="form-inline">
             <div class="form-group">
-            <RaisedButton label={ this.state.hide? '显示字幕': '隐藏字幕'} onClick={this.hideOrShowSubtitle} style={styles.hideBtnWidth}/>
-            <SelectField
-                  value={this.state.value}
-                  onChange={this.handleSelect}
-                  style={ styles.customWidth }
-                >
-                  <MenuItem value={1} primaryText="Custom width" />
-                  <MenuItem value={2} primaryText="Every Night" />
-                  <MenuItem value={3} primaryText="Weeknights" />
-                  <MenuItem value={4} primaryText="Weekends" />
-                  <MenuItem value={5} primaryText="Weekly" />
-            </SelectField>
+              <label>重复次数：</label>
+              <SelectField
+                       value={this.state.repeat_times}
+                       onChange={this.handleRepeatTimes}
+                       style={styles.customWidth}
+                     >
+                       <MenuItem value={1} primaryText="1" />
+                       <MenuItem value={2} primaryText="2" />
+                       <MenuItem value={3} primaryText="3" />
+              </SelectField>
+              <RaisedButton label={ this.state.hide? '显示字幕': '隐藏字幕'} onClick={this.hideOrShowSubtitle} style={styles.hideBtnWidth}/>
 
-            <RaisedButton
-              label="Open Drawer"
-              onTouchTap={this.handleToggle}
-            />
-            <Drawer
-              docked={false}
-              width={200}
-              open={this.state.open}
-              onRequestChange={(open) => this.setState({open})}
-            >
-              <MenuItem onTouchTap={this.handleClose}>Menu Item</MenuItem>
-              <MenuItem onTouchTap={this.handleClose}>Menu Item 2</MenuItem>
-
-            </Drawer>
+              <RaisedButton
+                label="设置"
+                onTouchTap={this.handleToggle}
+              />
+              <Drawer
+                docked={false}
+                width={200}
+                open={this.state.open}
+                onRequestChange={(open) => this.setState({open})}
+              >
+                <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
+                <MenuItem onTouchTap={this.handleClose}>Menu Item 2</MenuItem>
+              </Drawer>
             </div>
           </form>
-          <form onSubmit={this.handleSubmit}>
-            <label>搜索：</label>
-            <input onChange={this.onChange} value={this.state.text} />
-            <button className="btn btn-default">下</button>
-          </form>
-          <form onSubmit={this.handleFilter}>
-            <label title="过滤后只会显示那些包含过滤词的句子">过滤：</label>
-            <input onChange={this.filterChange} value={this.state.textFilter} />
-          </form>
+          
+            <form onSubmit={this.handleSearchSubmit} id="search_form">
+              <label>搜索：</label>
+              <TextField
+                id="text-field-controlled"
+                value={this.state.text}
+                onChange={this.onSearchChange}
+              />
+              <button className="btn btn-default">下</button>
+            </form>
+            <form onSubmit={this.handleFilter}>
+              <label title="过滤后只会显示那些包含过滤词的句子">过滤：</label>
+              <TextField
+                id="filter-field-controlled"
+                value={this.state.textFilter}
+                onChange={this.filterChange}
+              />
+            </form>
+          
           <CurrentSentence 
             current_sentence={ this.state.current_sentence } 
             prev_sentence={this.prev_sentence} 
             next_sentence={this.next_sentence} 
             currentSentenceClick={this.currentSentenceClick} />
-          <EnglishList items={this.state.items} ref="english_list" change_current_sentence={ this.change_current_sentence } />
+          <EnglishList items={this.state.items} 
+                      ref="english_list" 
+                      change_current_sentence={ this.change_current_sentence } 
+                      />
         </div>
         </MuiThemeProvider>
     );
@@ -222,6 +236,10 @@ $(window).keydown(function(e){
   };
 })
 
+// $('.english_list_class li').tooltip({
+//   my: "left top",
+//   at: "left top"
+// });
 // $("#hideorshow").click(function(){
 //   var el= $("#english_list");
 //    if (!hideSubtitle) { 
