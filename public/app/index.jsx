@@ -31,7 +31,7 @@ function set_current_media(media){
   var mediaObj= media
   var mediaFilename=`media/${mediaObj.medianame}`
   var srtFileName=`./subtitle/${mediaObj.srtname}`
-  G_player.src = mediaFilename
+  g_player.src = mediaFilename
 
   // 注意需要加上utf-8, 需要使用Sync同步读取、
   // 不然下面的items获取不到值。
@@ -49,7 +49,7 @@ function set_current_media(media){
   srtArray = newSrtArray;
 }
 
-set_current_media(G_media.video[1]); //第一次就设置成排名第一的video
+set_current_media(g_media.video[1]); //第一次就设置成排名第一的video
 
 
 var SRTApp= React.createClass({
@@ -153,7 +153,7 @@ var SRTApp= React.createClass({
   handleRepeatTimes:function(event, index, value){
     this.setState({repeat_times: value})
     // console.log(value)
-    G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
+    g_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
   },
   handleMovie:function(video){
     // console.log(video)
@@ -196,7 +196,7 @@ var SRTApp= React.createClass({
               >
 
                 <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
-                { G_media.video.map((video)=>{
+                { g_media.video.map((video)=>{
                     return <MenuItem onTouchTap={this.handleMovie.bind(null,video)} key={video.name} >{video.description}
                            </MenuItem>
                 })}
