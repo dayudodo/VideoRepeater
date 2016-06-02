@@ -24,29 +24,33 @@ var fs = require('fs');
 var srt = require("srt").fromString;
 
 var hideSubtitle = false;
-
-//初始化视频及字幕文件
-var sourceName='croods'
-var videoFileName=`media/${sourceName}.mp4`
-var srtFileName=`./subtitle/${sourceName}.srt`
-
-var vid= document.getElementById('player');
-vid.src=videoFileName;
-
-// 注意需要加上utf-8, 需要使用Sync同步读取、
-// 不然下面的items获取不到值。
-var data = srt(fs.readFileSync(srtFileName,'utf-8'));
-for(var index in data){
-	// data[index]["english"]= data[index].text.split('\n')[0]
-	// data[index]["chinese"]= data[index].text.split('\n')[1]
-  [ data[index]["english"],data[index]["chinese"] ] = data[index].text.split('\n')
-}
-
-// 将数据转化成数组，以供angular的filter使用。
 var srtArray=[];
-for(var index in data){
-	srtArray= srtArray.concat(data[index]);
+
+function set_current_media(media){
+
+  var mediaObj= media
+  var mediaFilename=`media/${mediaObj.medianame}`
+  var srtFileName=`./subtitle/${mediaObj.srtname}`
+  G_player.src = mediaFilename
+
+  // 注意需要加上utf-8, 需要使用Sync同步读取、
+  // 不然下面的items获取不到值。
+  var data = srt(fs.readFileSync(srtFileName,'utf-8'));
+  for(var index in data){
+    // data[index]["english"]= data[index].text.split('\n')[0]
+    // data[index]["chinese"]= data[index].text.split('\n')[1]
+    [ data[index]["english"],data[index]["chinese"] ] = data[index].text.split('\n')
+  }
+
+  var newSrtArray=new Array();
+  for(var index in data){
+    newSrtArray= newSrtArray.concat(data[index]);
+  }
+  srtArray = newSrtArray;
 }
+
+set_current_media(G_media.video[1]); //第一次就设置成排名第一的video
+
 
 var SRTApp= React.createClass({
   getInitialState: function() {
@@ -151,6 +155,13 @@ var SRTApp= React.createClass({
     // console.log(value)
     G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
   },
+  handleMovie:function(video){
+    // console.log(video)
+    // 改变当前媒体
+    set_current_media(video);
+    this.setState({items: srtArray});
+    this.handleClose();
+  },
   render: function(){
     const styles = {
       customWidth: { width: 100, },
@@ -183,8 +194,12 @@ var SRTApp= React.createClass({
                 open={this.state.open}
                 onRequestChange={(open) => this.setState({open})}
               >
+
                 <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
-                <MenuItem onTouchTap={this.handleClose}>Menu Item 2</MenuItem>
+                { G_media.video.map((video)=>{
+                    return <MenuItem onTouchTap={this.handleMovie.bind(null,video)} key={video.name} >{video.description}
+                           </MenuItem>
+                })}
               </Drawer>
             </div>
           </form>
@@ -236,17 +251,4 @@ $(window).keydown(function(e){
   };
 })
 
-// $('.english_list_class li').tooltip({
-//   my: "left top",
-//   at: "left top"
-// });
-// $("#hideorshow").click(function(){
-//   var el= $("#english_list");
-//    if (!hideSubtitle) { 
-//     $(this).text("显示字幕");
-//   }else{
-//     $(this).text("隐藏字幕");
-//   };
-//   $('#english_list').toggleClass('hidden');
-//   hideSubtitle = !hideSubtitle;
-// })
+// module.exports= 

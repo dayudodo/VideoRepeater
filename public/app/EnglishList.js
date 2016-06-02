@@ -52,8 +52,8 @@ var EnglishList = _react2.default.createClass({
 		return _react2.default.createElement(
 			'ul',
 			{ className: 'english_list_class' },
-			this.props.items.map(function (item) {
-				return _react2.default.createElement(ListItem, { key: item.startTime, onClick: _this.handleClick.bind(null, item), item: item });
+			this.props.items.map(function (item, index) {
+				return _react2.default.createElement(ListItem, { key: Date.now() + index, onClick: _this.handleClick.bind(null, item), item: item });
 			})
 		);
 	}

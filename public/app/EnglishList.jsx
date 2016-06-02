@@ -35,8 +35,8 @@ var EnglishList = React.createClass({
 	},
 	render() {
 		return <ul className='english_list_class'>
-		  {this.props.items.map((item)=> {
-			  return <ListItem key={ item.startTime }  onClick={this.handleClick.bind(null,item)}  item={item}/>
+		  {this.props.items.map((item,index)=> {
+			  return <ListItem key={ Date.now() + index }  onClick={this.handleClick.bind(null,item)}  item={item}/>
 		})}</ul>
 	}
 });

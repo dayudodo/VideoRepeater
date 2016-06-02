@@ -64,35 +64,38 @@ var fs = require('fs');
 var srt = require("srt").fromString;
 
 var hideSubtitle = false;
-
-//初始化视频及字幕文件
-var sourceName = 'croods';
-var videoFileName = 'media/' + sourceName + '.mp4';
-var srtFileName = './subtitle/' + sourceName + '.srt';
-
-var vid = document.getElementById('player');
-vid.src = videoFileName;
-
-// 注意需要加上utf-8, 需要使用Sync同步读取、
-// 不然下面的items获取不到值。
-var data = srt(fs.readFileSync(srtFileName, 'utf-8'));
-for (var index in data) {
-  var _data$index$text$spli = data[index].text.split('\n');
-  // data[index]["english"]= data[index].text.split('\n')[0]
-  // data[index]["chinese"]= data[index].text.split('\n')[1]
-
-
-  var _data$index$text$spli2 = _slicedToArray(_data$index$text$spli, 2);
-
-  data[index]["english"] = _data$index$text$spli2[0];
-  data[index]["chinese"] = _data$index$text$spli2[1];
-}
-
-// 将数据转化成数组，以供angular的filter使用。
 var srtArray = [];
-for (var index in data) {
-  srtArray = srtArray.concat(data[index]);
+
+function set_current_media(media) {
+
+  var mediaObj = media;
+  var mediaFilename = 'media/' + mediaObj.medianame;
+  var srtFileName = './subtitle/' + mediaObj.srtname;
+  G_player.src = mediaFilename;
+
+  // 注意需要加上utf-8, 需要使用Sync同步读取、
+  // 不然下面的items获取不到值。
+  var data = srt(fs.readFileSync(srtFileName, 'utf-8'));
+  for (var index in data) {
+    var _data$index$text$spli = data[index].text.split('\n');
+    // data[index]["english"]= data[index].text.split('\n')[0]
+    // data[index]["chinese"]= data[index].text.split('\n')[1]
+
+
+    var _data$index$text$spli2 = _slicedToArray(_data$index$text$spli, 2);
+
+    data[index]["english"] = _data$index$text$spli2[0];
+    data[index]["chinese"] = _data$index$text$spli2[1];
+  }
+
+  var newSrtArray = new Array();
+  for (var index in data) {
+    newSrtArray = newSrtArray.concat(data[index]);
+  }
+  srtArray = newSrtArray;
 }
+
+set_current_media(G_media.video[1]); //第一次就设置成排名第一的video
 
 var SRTApp = _react2.default.createClass({
   displayName: 'SRTApp',
@@ -205,6 +208,13 @@ var SRTApp = _react2.default.createClass({
     // console.log(value)
     G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
   },
+  handleMovie: function handleMovie(video) {
+    // console.log(video)
+    // 改变当前媒体
+    set_current_media(video);
+    this.setState({ items: srtArray });
+    this.handleClose();
+  },
   render: function render() {
     var _this2 = this;
 
@@ -260,11 +270,13 @@ var SRTApp = _react2.default.createClass({
                 { onTouchTap: this.handleClose },
                 'Close'
               ),
-              _react2.default.createElement(
-                _MenuItem2.default,
-                { onTouchTap: this.handleClose },
-                'Menu Item 2'
-              )
+              G_media.video.map(function (video) {
+                return _react2.default.createElement(
+                  _MenuItem2.default,
+                  { onTouchTap: _this2.handleMovie.bind(null, video), key: video.name },
+                  video.description
+                );
+              })
             )
           )
         ),
@@ -337,17 +349,4 @@ $(window).keydown(function (e) {
   };
 });
 
-// $('.english_list_class li').tooltip({
-//   my: "left top",
-//   at: "left top"
-// });
-// $("#hideorshow").click(function(){
-//   var el= $("#english_list");
-//    if (!hideSubtitle) {
-//     $(this).text("显示字幕");
-//   }else{
-//     $(this).text("隐藏字幕");
-//   };
-//   $('#english_list').toggleClass('hidden');
-//   hideSubtitle = !hideSubtitle;
-// })
+// module.exports=

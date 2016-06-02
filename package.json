@@ -49,9 +49,10 @@
     "react-dom": "^15.1.0",
     "react-tap-event-plugin": "^1.0.0",
     "srt": "0.0.3",
-    "style-loader": "^0.13.1"
+    "style-loader": "^0.13.1",
+    "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
-    "gulp-plumber": "^1.1.0"
+    "nconf": "^0.8.4"
   }
 }
