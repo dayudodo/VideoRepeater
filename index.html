@@ -56,12 +56,11 @@
 
   <script>
     // You can also require other files to run in this process
-    require('./renderer.js')
     G_player= document.getElementById('player')
     G_repeat_times = 1
     G_media = JSON.parse(require('fs').readFileSync('media.json','utf-8'))
   </script>
-  <script type="text/javascript" src="myMediaPlayer.js"></script>
+  <script type="text/javascript" src="./public/app/myMediaPlayer.js"></script>
   <script>require('./public/app/index');</script>
 
 </html>

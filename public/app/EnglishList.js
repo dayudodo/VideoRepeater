@@ -31,7 +31,7 @@ var ListItem = _react2.default.createClass({
 var EnglishList = _react2.default.createClass({
 	displayName: 'EnglishList',
 	componentDidMount: function componentDidMount() {
-		console.log('did mount');
+		console.log('did mount EnglishList');
 	},
 	shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
 		// return false;
@@ -39,7 +39,7 @@ var EnglishList = _react2.default.createClass({
 		return this.props.items != nextProps.items; //只有当items改变的时候才会re-render! 其它情况的state改变并不会影响到这儿！
 	},
 	handleClick: function handleClick(item) {
-		MediaPlayer(item.startTime / 1000, item.endTime / 1000);
+		// MediaPlayer(item.startTime/1000, item.endTime/1000); //播放放到主控中，以便统一控制
 		// ReactDOM.render(
 		//   <div>{item.english}</div>,
 		//   document.getElementById('current_sentence')

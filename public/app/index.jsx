@@ -24,7 +24,9 @@ var fs = require('fs');
 var srt = require("srt").fromString;
 
 var hideSubtitle = false;
-var srtArray=[];
+var srtArray;
+var current_media;
+var arr_index=new Array(); //用于判断与上一次的索引相同与否
 
 function set_current_media(media){
 
@@ -42,11 +44,12 @@ function set_current_media(media){
     [ data[index]["english"],data[index]["chinese"] ] = data[index].text.split('\n')
   }
 
-  var newSrtArray=new Array();
+  srtArray= new Array(); //需要生成个新的字幕数组，不然就总是会把以前的给加上。
   for(var index in data){
-    newSrtArray= newSrtArray.concat(data[index]);
+    srtArray= srtArray.concat(data[index]);
   }
-  srtArray = newSrtArray;
+  current_media = media;
+  arr_index = [media.index, media.index];
 }
 
 set_current_media(G_media.video[1]); //第一次就设置成排名第一的video
@@ -58,9 +61,9 @@ var SRTApp= React.createClass({
         items: srtArray
       , text: ''
       , textFilter: ''
-      , current_index: -1
+      , current_index: current_media.index
+      , current_sentence: srtArray[current_media.index]
       , prev_search_text: ''
-      , current_sentence: new Object()
       , value: 1
       , open:false
       , repeat_times: 1 };
@@ -101,10 +104,28 @@ var SRTApp= React.createClass({
   },
   play_sentence:function(index){
     if (index==NaN) {throw 'params index error in play_sentence().'};
-    var english= this.getEnglishList()[index];
-    if(english){ 
+    // var item= this.getEnglishList()[index];
+    var item= srtArray[index];
+    if(item){
       this.setState({current_index: index})
-      english.click(); 
+      //保存当前index.播放哪个就保存哪个
+      console.log(`index:${index}`);
+      current_media.index = index;
+      arr_index.push(index); arr_index.shift(); 
+      console.log(arr_index)
+      if( arr_index[0] != arr_index[1] ){
+        fs.writeFile('output.json', JSON.stringify(current_media),{encoding: 'utf8',flag: 'w'} ,(err)=>{
+          if (err) {throw new Error(err)}
+            else
+          {
+            console.log('ok')
+          }
+        });
+      }
+      // item.click(); 
+      this.setState({current_sentence: item});  //更新当然句子的显示，
+      MediaPlayer(item.startTime/1000, item.endTime/1000); 
+
     }
   },
   play_current:function(){
@@ -117,10 +138,10 @@ var SRTApp= React.createClass({
     this.play_sentence(this.state.current_index + 1)
   },
   change_current_sentence:function(item){
-    // console.log(item);
     this.setState({current_sentence: item});  
     var index = this.state.items.indexOf(item); //一切的数据变化都集中到items中，如此，子组件的数据获取其实就根据state中的数据来！
     this.setState({current_index: index});
+    this.play_sentence(index); //有参数尽量使用参数，而不要使用状态，因为状态是异步的，这个函数执行完之后状态才会发生变化？应该是这样，不然全乱了
   },
   filterChange:function(e){
     this.setState({textFilter: e.target.value});
@@ -159,7 +180,11 @@ var SRTApp= React.createClass({
     // console.log(video)
     // 改变当前媒体
     set_current_media(video);
-    this.setState({items: srtArray});
+    this.setState({
+        items: srtArray 
+      , current_index: current_media.index
+      , current_sentence: srtArray[current_media.index]
+    });
     this.handleClose();
   },
   render: function(){
@@ -196,9 +221,13 @@ var SRTApp= React.createClass({
               >
 
                 <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
-                { G_media.video.map((video)=>{
-                    return <MenuItem onTouchTap={this.handleMovie.bind(null,video)} key={video.name} >{video.description}
+                { G_media.video.map((video,index)=>{
+                    return <div key={index}>
+                            <img src={`./image/${ video.image }`} height="50"/>
+                            <MenuItem onTouchTap={this.handleMovie.bind(null,video)} key={video.name} >{video.description}
                            </MenuItem>
+                           </div>
+
                 })}
               </Drawer>
             </div>
@@ -226,10 +255,10 @@ var SRTApp= React.createClass({
             current_sentence={ this.state.current_sentence } 
             prev_sentence={this.prev_sentence} 
             next_sentence={this.next_sentence} 
-            currentSentenceClick={this.currentSentenceClick} />
+            currentSentenceClick={this.play_current} />
           <EnglishList items={this.state.items} 
                       ref="english_list" 
-                      change_current_sentence={ this.change_current_sentence } 
+                      change_current_sentence={ this.change_current_sentence }
                       />
         </div>
         </MuiThemeProvider>
@@ -251,4 +280,9 @@ $(window).keydown(function(e){
   };
 })
 
-// module.exports= 
+// 载入后就开始读当前句子，算是初始化的一部分。
+// console.log(srtrendered.state.current_sentence);
+$(function(){
+  srtrendered.play_current();
+})
+

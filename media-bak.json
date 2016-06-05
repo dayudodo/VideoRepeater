@@ -2,19 +2,17 @@
 	"video":[
 		{
 			"name":"croods",
-			"description":"疯狂原始人",
+			"description":"布鲁克一家",
 			"medianame":"croods.mp4",
-			"image":"croods.jpg",
 			"srtname":"croods.srt",
-			"index":20
+			"index":0
 		},
 		{
 			"name":"panda1",
 			"description":"功夫熊猫1",
 			"medianame":"panda1.mp4",
-			"image":"panda1.jpg",
 			"srtname":"panda1.srt",
-			"index":30
+			"index":0
 		}
 	],
 	"sound":[

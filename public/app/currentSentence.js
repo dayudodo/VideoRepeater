@@ -10,6 +10,9 @@ var CurrentSentence = React.createClass({
 	displayName: 'CurrentSentence',
 
 	//按钮点击就去执行父组件中的方法好了，因为资源都在父组件之中！
+	// shouldComponentUpdate(nextProps, nextState){
+	// 	return this.props.current_sentence != nextProps.current_sentence
+	// },
 	prev_sentence: function prev_sentence(e) {
 		e.preventDefault();
 		this.props.prev_sentence();
