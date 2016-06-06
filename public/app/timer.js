@@ -23,7 +23,8 @@ var Timer = React.createClass({
       'div',
       null,
       '学习时间: ',
-      this.state.secondsElapsed
+      this.state.secondsElapsed,
+      '秒'
     );
   }
 });

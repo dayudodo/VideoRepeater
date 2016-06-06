@@ -49,6 +49,7 @@ function set_current_media(media_index){
   var local_path= require('path')
   var local_mpfile= local_path.resolve('.',mpFileName)
   var local_srtfile = local_path.resolve('.',srtFileName)
+  // 判断媒体及字幕文件是否存在
   if (fs.existsSync(local_mpfile) || fs.existsSync(local_srtfile) ){
     G_player.src = mpFileName
   }else{
@@ -306,7 +307,8 @@ var SRTApp= React.createClass({
                         rows={ video.featured ? 2 : 1 }
                         onTouchTap={ video.featured ? this.handleSubMovieDialog : this.handleMovie.bind(null,video,index) }
                         subtitle=
-                          {video.featured? <Dialog
+                          {video.featured? 
+                                  <Dialog
                                     title={video.description}
                                     actions={subMovieActions}
                                     modal={false}
@@ -315,10 +317,10 @@ var SRTApp= React.createClass({
                                   >
                                     
                                     {video.filenames.map((filename, filename_index)=>(
-                                      <RaisedButton key={filename_index} 
-                                      label={ filename.name } 
-                                      onClick={this.change_filename.bind(null,filename_index)} 
-                                      style={styles.hideBtnWidth}/>
+                                      <RaisedButton key={filename_index}
+                                      label={ filename.name }
+                                      onClick={this.change_filename.bind(null,filename_index)}
+                                      style={styles.hideBtnWidth} />
                                       ))}
                                   </Dialog> : null
                           }

@@ -99,6 +99,7 @@ function set_current_media(media_index) {
   var local_path = require('path');
   var local_mpfile = local_path.resolve('.', mpFileName);
   var local_srtfile = local_path.resolve('.', srtFileName);
+  // 判断媒体及字幕文件是否存在
   if (fs.existsSync(local_mpfile) || fs.existsSync(local_srtfile)) {
     G_player.src = mpFileName;
   } else {

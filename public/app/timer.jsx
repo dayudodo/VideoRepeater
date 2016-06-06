@@ -16,7 +16,7 @@ var Timer = React.createClass({
   },
   render: function() {
     return (
-      <div>学习时间: {this.state.secondsElapsed}</div>
+      <div>学习时间: { this.state.secondsElapsed }秒</div>
     );
   }
 });

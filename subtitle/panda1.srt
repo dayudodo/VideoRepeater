@@ -3770,7 +3770,7 @@ Wait. What happens when I read it?
 
 1509
 01:04:24,020 --> 01:04:28,040
-Legend says you will be able to hear a butterfly's wing beat.
+No one knows, but Legend says you will be able to hear a butterfly's wing beat.
 据说你能听到蝴蝶拍打翅膀的声音
 
 1511
@@ -3945,7 +3945,7 @@ Listen to me, all of you.
 
 1579
 01:06:27,310 --> 01:06:30,830
-It is time for you to continue yourjourney without me.
+It is time for you to continue your journey without me.
 没有我，你们的路也一定要坚持走下去
 
 1581
