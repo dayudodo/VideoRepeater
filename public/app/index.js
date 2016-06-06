@@ -22,19 +22,21 @@ var _MuiThemeProvider = require('material-ui/styles/MuiThemeProvider');
 
 var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
-var _RaisedButton = require('material-ui/RaisedButton');
-
-var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
 var _Dialog = require('material-ui/Dialog');
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
 
-var _colors = require('material-ui/styles/colors');
-
 var _FlatButton = require('material-ui/FlatButton');
 
 var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _RaisedButton = require('material-ui/RaisedButton');
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+var _IconButton = require('material-ui/IconButton');
+
+var _IconButton2 = _interopRequireDefault(_IconButton);
 
 var _SelectField = require('material-ui/SelectField');
 
@@ -52,6 +54,20 @@ var _TextField = require('material-ui/TextField');
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
+var _DatePicker = require('material-ui/DatePicker');
+
+var _DatePicker2 = _interopRequireDefault(_DatePicker);
+
+var _GridList = require('material-ui/GridList');
+
+var _Subheader = require('material-ui/Subheader');
+
+var _Subheader2 = _interopRequireDefault(_Subheader);
+
+var _starBorder = require('material-ui/svg-icons/toggle/star-border');
+
+var _starBorder2 = _interopRequireDefault(_starBorder);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _reactTapEventPlugin2.default)();
@@ -68,12 +84,37 @@ var srtArray;
 var current_media;
 var arr_index = new Array(); //用于判断与上一次的索引相同与否
 
-function set_current_media(media) {
+function set_current_media(media_index) {
 
-  var mediaObj = media;
-  var mediaFilename = 'media/' + mediaObj.medianame;
-  var srtFileName = './subtitle/' + mediaObj.srtname;
-  G_player.src = mediaFilename;
+  // 换片看了，自然media_index也要变，并且还得把变化保存起来。
+  if (typeof media_index != "string" && typeof media_index != "number") {
+    console.log(media_index);
+    throw new Error('media_index should be a number');
+  };
+
+  var media_param = G_media.video[media_index];
+  var mpObj = media_param.filenames[media_param.filename_index];
+  var mpFileName = 'media/' + mpObj.medianame;
+  var srtFileName = 'subtitle/' + mpObj.srtname;
+  var local_path = require('path');
+  var local_mpfile = local_path.resolve('.', mpFileName);
+  var local_srtfile = local_path.resolve('.', srtFileName);
+  if (fs.existsSync(local_mpfile) || fs.existsSync(local_srtfile)) {
+    G_player.src = mpFileName;
+  } else {
+    throw new Error('can\'t find ' + mpFileName + ' or ' + srtFileName);
+  }
+
+  if (Number(G_media.media_index) != Number(media_index)) {
+    G_media.media_index = media_index;
+    fs.writeFile('media.json', JSON.stringify(G_media), function (err) {
+      if (err) {
+        throw new Error(err);
+      } else {
+        console.log('media_index change to ' + media_index + ', name: ' + G_media.video[media_index].name);
+      }
+    });
+  }
 
   // 注意需要加上utf-8, 需要使用Sync同步读取、
   // 不然下面的items获取不到值。
@@ -94,25 +135,29 @@ function set_current_media(media) {
   for (var index in data) {
     srtArray = srtArray.concat(data[index]);
   }
-  current_media = media;
-  arr_index = [media.index, media.index];
+  current_media = media_param;
+  arr_index = [mpObj.index, mpObj.index];
 }
 
-set_current_media(G_media.video[1]); //第一次就设置成排名第一的video
+set_current_media(G_media.media_index); //第一次就设置成排名第一的video=>panda1
 
 var SRTApp = _react2.default.createClass({
   displayName: 'SRTApp',
 
   getInitialState: function getInitialState() {
+    var mpfile_index = current_media.filename_index; //每几个媒体文件，电影里面可能会有好几段视频，统一作为数组处理，
+    var sentence_index = current_media.filenames[mpfile_index].index; //当前媒体文件中每几个index
+
     return {
       items: srtArray,
       text: '',
       textFilter: '',
-      current_index: current_media.index,
-      current_sentence: srtArray[current_media.index],
+      current_index: sentence_index,
+      current_sentence: srtArray[sentence_index],
       prev_search_text: '',
       value: 1,
       open: false,
+      subMovieOpen: false,
       repeat_times: 1 };
   },
   onSearchChange: function onSearchChange(e) {
@@ -160,16 +205,15 @@ var SRTApp = _react2.default.createClass({
     if (item) {
       this.setState({ current_index: index });
       //保存当前index.播放哪个就保存哪个
-      console.log('index:' + index);
-      current_media.index = index;
+      current_media.filenames[current_media.filename_index].index = index;
       arr_index.push(index);arr_index.shift();
       console.log(arr_index);
       if (arr_index[0] != arr_index[1]) {
-        fs.writeFile('output.json', JSON.stringify(current_media), { encoding: 'utf8', flag: 'w' }, function (err) {
+        fs.writeFile('media.json', JSON.stringify(G_media), function (err) {
           if (err) {
             throw new Error(err);
           } else {
-            console.log('ok');
+            // console.log('ok')
           }
         });
       }
@@ -214,8 +258,9 @@ var SRTApp = _react2.default.createClass({
     var newArray = srtArray.filter(function (item) {
       return item.english.toLowerCase().includes(_this.state.textFilter.toLowerCase());
     });
+    srtArray = newArray;
     // console.log(newArray.slice(2,5))
-    this.setState({ items: newArray });
+    this.setState({ items: srtArray });
   },
   handleToggle: function handleToggle() {
     this.setState({ open: !this.state.open });
@@ -228,24 +273,54 @@ var SRTApp = _react2.default.createClass({
     // console.log(value)
     G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
   },
-  handleMovie: function handleMovie(video) {
+  handleMovie: function handleMovie(video, index) {
     // console.log(video)
     // 改变当前媒体
-    set_current_media(video);
+    set_current_media(index);
+    var mpfile_index = current_media.filenames[current_media.filename_index].index;
     this.setState({
       items: srtArray,
-      current_index: current_media.index,
-      current_sentence: srtArray[current_media.index]
+      current_index: mpfile_index,
+      current_sentence: srtArray[mpfile_index]
     });
     this.handleClose();
+  },
+  handleSubMovieDialog: function handleSubMovieDialog() {
+    console.log("popup a dialog to select sub movie");
+    this.setState({ subMovieOpen: true });
+  },
+  handleSubMovieDialogClose: function handleSubMovieDialogClose() {
+    this.setState({ subMovieOpen: false });
+  },
+  change_filename: function change_filename(filename_index) {
+    console.log("filename_index:", filename_index);
+  },
+  componentDidMount: function componentDidMount() {
+    this.play_current();
   },
   render: function render() {
     var _this2 = this;
 
     var styles = {
       customWidth: { width: 100 },
-      hideBtnWidth: { margin: 12 }
+      hideBtnWidth: { margin: 12 },
+      root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around'
+      },
+      gridList: {
+        width: 500,
+        overflowY: 'auto',
+        marginBottom: 24
+      }
     };
+    var subMovieActions = [_react2.default.createElement(_FlatButton2.default, {
+      label: 'Ok',
+      primary: true,
+      keyboardFocused: true,
+      onTouchTap: this.handleSubMovieDialogClose
+    })];
     return _react2.default.createElement(
       _MuiThemeProvider2.default,
       { muiTheme: (0, _getMuiTheme2.default)() },
@@ -283,29 +358,61 @@ var SRTApp = _react2.default.createClass({
               _Drawer2.default,
               {
                 docked: false,
-                width: 200,
+                width: 500,
                 open: this.state.open,
                 onRequestChange: function onRequestChange(open) {
                   return _this2.setState({ open: open });
                 }
               },
               _react2.default.createElement(
-                _MenuItem2.default,
-                { onTouchTap: this.handleClose },
-                'Close'
-              ),
-              G_media.video.map(function (video, index) {
-                return _react2.default.createElement(
-                  'div',
-                  { key: index },
-                  _react2.default.createElement('img', { src: './image/' + video.image, height: '50' }),
-                  _react2.default.createElement(
-                    _MenuItem2.default,
-                    { onTouchTap: _this2.handleMovie.bind(null, video), key: video.name },
-                    video.description
-                  )
-                );
-              })
+                'div',
+                { style: styles.root },
+                _react2.default.createElement(
+                  _MenuItem2.default,
+                  { onTouchTap: this.handleClose },
+                  'Close'
+                ),
+                _react2.default.createElement(
+                  _GridList.GridList,
+                  {
+                    cellHeight: 200,
+                    style: styles.gridList
+                  },
+
+                  /* featured用来指示是否需要显示更下一级的各种菜单，以及用来控制是否显示对话框，如果filenames数组只有一个值，默认是不显示对话框的 */
+                  G_media.video.map(function (video, index) {
+                    return _react2.default.createElement(
+                      _GridList.GridTile,
+                      {
+                        key: index,
+                        title: video.description,
+                        titlePosition: 'top',
+                        titleBackground: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)',
+                        cols: video.featured ? 2 : 1,
+                        rows: video.featured ? 2 : 1,
+                        onTouchTap: video.featured ? _this2.handleSubMovieDialog : _this2.handleMovie.bind(null, video, index),
+                        subtitle: video.featured ? _react2.default.createElement(
+                          _Dialog2.default,
+                          {
+                            title: video.description,
+                            actions: subMovieActions,
+                            modal: false,
+                            open: _this2.state.subMovieOpen,
+                            onRequestClose: _this2.handleSubMovieDialogClose
+                          },
+                          video.filenames.map(function (filename, filename_index) {
+                            return _react2.default.createElement(_RaisedButton2.default, { key: filename_index,
+                              label: filename.name,
+                              onClick: _this2.change_filename.bind(null, filename_index),
+                              style: styles.hideBtnWidth });
+                          })
+                        ) : null
+                      },
+                      _react2.default.createElement('img', { src: './image/' + video.image, alt: video.name })
+                    );
+                  })
+                )
+              )
             )
           )
         ),
@@ -346,7 +453,8 @@ var SRTApp = _react2.default.createClass({
           current_sentence: this.state.current_sentence,
           prev_sentence: this.prev_sentence,
           next_sentence: this.next_sentence,
-          currentSentenceClick: this.play_current }),
+          currentSentenceClick: this.play_current
+        }),
         _react2.default.createElement(EnglishList, { items: this.state.items,
           ref: 'english_list',
           change_current_sentence: this.change_current_sentence
@@ -380,6 +488,6 @@ $(window).keydown(function (e) {
 
 // 载入后就开始读当前句子，算是初始化的一部分。
 // console.log(srtrendered.state.current_sentence);
-$(function () {
-  srtrendered.play_current();
-});
+// $(function(){
+//   srtrendered.play_current();
+// })

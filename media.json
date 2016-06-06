@@ -1,46 +1,109 @@
 {
-	"video":[
-		{
-			"name":"croods",
-			"description":"疯狂原始人",
-			"medianame":"croods.mp4",
-			"image":"croods.jpg",
-			"srtname":"croods.srt",
-			"index":20
-		},
-		{
-			"name":"panda1",
-			"description":"功夫熊猫1",
-			"medianame":"panda1.mp4",
-			"image":"panda1.jpg",
-			"srtname":"panda1.srt",
-			"index":30
-		}
-	],
-	"sound":[
-		{
-			"name":"secret garden",
-			"description":"秘密花园",
-			"filenames":[
-				{
-					"name":"1",
-					"description":"",
-					"medianame":"1.mp3",
-					"index":0
-				},
-				{
-					"name":"2",
-					"description":"",
-					"medianame":"2.mp3",
-					"index":0
-				},
-				{
-					"name":"3",
-					"description":"",
-					"medianame":"3.mp3",
-					"index":0
-				}
-			]
-		}
-	]
+  "media_index": 0,
+  "video": [
+    {
+      "name": "croods",
+      "description": "疯狂原始人",
+      "image": "croods.jpg",
+      "filename_index": 0,
+      "filenames": [
+        {
+          "name": "1",
+          "description": "1",
+          "medianame": "croods.mp4",
+          "srtname": "croods.srt",
+          "editor": "dodo",
+          "index": 205
+        }
+      ]
+    },
+    {
+      "name": "panda1",
+      "description": "功夫熊猫1",
+      "image": "panda1.jpg",
+      "filename_index": 0,
+      "filenames": [
+        {
+          "name": "1",
+          "description": "1",
+          "medianame": "panda1.mp4",
+          "srtname": "panda1.srt",
+          "editor": "dodo",
+          "index": 647
+        }
+      ]
+    },
+    {
+      "name": "secret garden",
+      "description": "秘密花园",
+      "image": "garden.jpg",
+      "featured": true, 
+      "filename_index": 2,
+      "filenames": [
+        {
+          "name": "1",
+          "description": "",
+          "medianame": "1.mp3",
+          "srtname": "1.srt",
+          "index": 0
+        },
+        {
+          "name": "2",
+          "description": "",
+          "medianame": "2.mp3",
+          "srtname": "2.srt",
+          "index": 0
+        },
+        {
+          "name": "3",
+          "description": "",
+          "medianame": "3.mp3",
+          "srtname": "3.srt",
+          "index": 0
+        },
+        {
+          "name": "4",
+          "description": "",
+          "medianame": "4.mp3",
+          "srtname": "4.srt",
+          "index": 0
+        },
+                {
+          "name": "5",
+          "description": "",
+          "medianame": "5.mp3",
+          "srtname": "5.srt",
+          "index": 0
+        },
+                {
+          "name": "6",
+          "description": "",
+          "medianame": "6.mp3",
+          "srtname": "6.srt",
+          "index": 0
+        },
+                {
+          "name": "7",
+          "description": "",
+          "medianame": "7.mp3",
+          "srtname": "7.srt",
+          "index": 0
+        },
+                {
+          "name": "8",
+          "description": "",
+          "medianame": "8.mp3",
+          "srtname": "8.srt",
+          "index": 0
+        },
+                {
+          "name": "9",
+          "description": "",
+          "medianame": "9.mp3",
+          "srtname": "9.srt",
+          "index": 0
+        }
+      ]
+    }
+  ]
 }

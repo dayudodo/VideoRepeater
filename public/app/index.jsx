@@ -4,14 +4,20 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
-import {deepOrange500} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Drawer from 'material-ui/Drawer';
 import TextField from 'material-ui/TextField';
+import DatePicker from 'material-ui/DatePicker';
+
+import {GridList, GridTile} from 'material-ui/GridList';
+import Subheader from 'material-ui/Subheader';
+import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+
 
 injectTapEventPlugin();
 
@@ -28,12 +34,38 @@ var srtArray;
 var current_media;
 var arr_index=new Array(); //用于判断与上一次的索引相同与否
 
-function set_current_media(media){
+function set_current_media(media_index){
 
-  var mediaObj= media
-  var mediaFilename=`media/${mediaObj.medianame}`
-  var srtFileName=`./subtitle/${mediaObj.srtname}`
-  G_player.src = mediaFilename
+  // 换片看了，自然media_index也要变，并且还得把变化保存起来。
+  if ( (typeof(media_index) != "string") && (typeof(media_index) != "number") ) { 
+    console.log(media_index);
+    throw new Error('media_index should be a number')
+  };
+
+  var media_param = G_media.video[media_index]
+  var mpObj= media_param.filenames[media_param.filename_index]
+  var mpFileName=`media/${mpObj.medianame}`
+  var srtFileName=`subtitle/${mpObj.srtname}`
+  var local_path= require('path')
+  var local_mpfile= local_path.resolve('.',mpFileName)
+  var local_srtfile = local_path.resolve('.',srtFileName)
+  if (fs.existsSync(local_mpfile) || fs.existsSync(local_srtfile) ){
+    G_player.src = mpFileName
+  }else{
+    throw new Error(`can't find ${mpFileName} or ${srtFileName}`);
+  }
+
+  if ( Number(G_media.media_index) != Number(media_index) )  {
+    G_media.media_index = media_index
+    fs.writeFile('media.json', JSON.stringify(G_media) ,(err)=>{
+      if (err) {throw new Error(err)}
+        else
+      {
+        console.log(`media_index change to ${media_index}, name: ${G_media.video[media_index].name}`);
+      }
+    })
+  }
+
 
   // 注意需要加上utf-8, 需要使用Sync同步读取、
   // 不然下面的items获取不到值。
@@ -48,24 +80,28 @@ function set_current_media(media){
   for(var index in data){
     srtArray= srtArray.concat(data[index]);
   }
-  current_media = media;
-  arr_index = [media.index, media.index];
+  current_media = media_param;
+  arr_index = [mpObj.index, mpObj.index];
 }
 
-set_current_media(G_media.video[1]); //第一次就设置成排名第一的video
+set_current_media( G_media.media_index ) //第一次就设置成排名第一的video=>panda1
 
 
 var SRTApp= React.createClass({
   getInitialState: function() {
+    var mpfile_index = current_media.filename_index //每几个媒体文件，电影里面可能会有好几段视频，统一作为数组处理，
+    var sentence_index = current_media.filenames[mpfile_index].index  //当前媒体文件中每几个index
+
     return {
         items: srtArray
       , text: ''
       , textFilter: ''
-      , current_index: current_media.index
-      , current_sentence: srtArray[current_media.index]
+      , current_index: sentence_index
+      , current_sentence: srtArray[sentence_index]
       , prev_search_text: ''
       , value: 1
       , open:false
+      , subMovieOpen: false
       , repeat_times: 1 };
   },
   onSearchChange: function(e) {
@@ -109,16 +145,15 @@ var SRTApp= React.createClass({
     if(item){
       this.setState({current_index: index})
       //保存当前index.播放哪个就保存哪个
-      console.log(`index:${index}`);
-      current_media.index = index;
+      current_media.filenames[current_media.filename_index].index = index;
       arr_index.push(index); arr_index.shift(); 
       console.log(arr_index)
       if( arr_index[0] != arr_index[1] ){
-        fs.writeFile('output.json', JSON.stringify(current_media),{encoding: 'utf8',flag: 'w'} ,(err)=>{
+        fs.writeFile('media.json', JSON.stringify(G_media), (err)=>{
           if (err) {throw new Error(err)}
             else
           {
-            console.log('ok')
+            // console.log('ok')
           }
         });
       }
@@ -162,8 +197,9 @@ var SRTApp= React.createClass({
     var newArray= srtArray.filter((item)=>{
       return item.english.toLowerCase().includes(this.state.textFilter.toLowerCase());
     });
+    srtArray= newArray
     // console.log(newArray.slice(2,5))
-    this.setState({items: newArray});
+    this.setState({items: srtArray});
   },
   handleToggle: function(){ 
     this.setState({open: !this.state.open})
@@ -176,22 +212,54 @@ var SRTApp= React.createClass({
     // console.log(value)
     G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
   },
-  handleMovie:function(video){
+  handleMovie:function(video, index){
     // console.log(video)
     // 改变当前媒体
-    set_current_media(video);
+    set_current_media( index );
+    var mpfile_index = current_media.filenames[current_media.filename_index].index
     this.setState({
         items: srtArray 
-      , current_index: current_media.index
-      , current_sentence: srtArray[current_media.index]
+      , current_index: mpfile_index
+      , current_sentence: srtArray[mpfile_index]
     });
     this.handleClose();
+  },
+  handleSubMovieDialog:function(){
+    console.log("popup a dialog to select sub movie");
+    this.setState({subMovieOpen:true})
+  },
+  handleSubMovieDialogClose:function(){
+    this.setState({subMovieOpen:false})
+  },
+  change_filename:function(filename_index){
+    console.log("filename_index:",filename_index);
+  },
+  componentDidMount:function(){
+    this.play_current();
   },
   render: function(){
     const styles = {
       customWidth: { width: 100, },
       hideBtnWidth:{ margin: 12, },
+      root: {
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-around',
+      },
+      gridList: {
+        width: 500,
+        overflowY: 'auto',
+        marginBottom: 24,
+      },
     };
+    const subMovieActions = [
+          <FlatButton
+            label="Ok"
+            primary={true}
+            keyboardFocused={true}
+            onTouchTap={this.handleSubMovieDialogClose}
+          />,
+        ];
     return (
       <MuiThemeProvider muiTheme={getMuiTheme()}>
        <div>
@@ -209,26 +277,57 @@ var SRTApp= React.createClass({
               </SelectField>
               <RaisedButton label={ this.state.hide? '显示字幕': '隐藏字幕'} onClick={this.hideOrShowSubtitle} style={styles.hideBtnWidth}/>
 
+
               <RaisedButton
                 label="设置"
                 onTouchTap={this.handleToggle}
               />
               <Drawer
                 docked={false}
-                width={200}
+                width={500}
                 open={this.state.open}
                 onRequestChange={(open) => this.setState({open})}
               >
-
-                <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
-                { G_media.video.map((video,index)=>{
-                    return <div key={index}>
-                            <img src={`./image/${ video.image }`} height="50"/>
-                            <MenuItem onTouchTap={this.handleMovie.bind(null,video)} key={video.name} >{video.description}
-                           </MenuItem>
-                           </div>
-
-                })}
+                <div style={styles.root}>
+                  <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
+                  <GridList
+                    cellHeight={200}
+                    style={styles.gridList}
+                  >
+                    { 
+                      /* featured用来指示是否需要显示更下一级的各种菜单，以及用来控制是否显示对话框，如果filenames数组只有一个值，默认是不显示对话框的 */
+                      G_media.video.map((video,index) => (
+                      <GridTile
+                        key={ index }
+                        title={ video.description }
+                        titlePosition="top"
+                        titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+                        cols={ video.featured ? 2 : 1 }
+                        rows={ video.featured ? 2 : 1 }
+                        onTouchTap={ video.featured ? this.handleSubMovieDialog : this.handleMovie.bind(null,video,index) }
+                        subtitle=
+                          {video.featured? <Dialog
+                                    title={video.description}
+                                    actions={subMovieActions}
+                                    modal={false}
+                                    open={this.state.subMovieOpen}
+                                    onRequestClose={this.handleSubMovieDialogClose}
+                                  >
+                                    
+                                    {video.filenames.map((filename, filename_index)=>(
+                                      <RaisedButton key={filename_index} 
+                                      label={ filename.name } 
+                                      onClick={this.change_filename.bind(null,filename_index)} 
+                                      style={styles.hideBtnWidth}/>
+                                      ))}
+                                  </Dialog> : null
+                          }
+                      >
+                        <img src={`./image/${ video.image }`} alt={video.name} />
+                      </GridTile>
+                    )) }
+                  </GridList>
+                </div>
               </Drawer>
             </div>
           </form>
@@ -248,14 +347,15 @@ var SRTApp= React.createClass({
                 id="filter-field-controlled"
                 value={this.state.textFilter}
                 onChange={this.filterChange}
-              />
+                />
             </form>
           
           <CurrentSentence 
             current_sentence={ this.state.current_sentence } 
             prev_sentence={this.prev_sentence} 
             next_sentence={this.next_sentence} 
-            currentSentenceClick={this.play_current} />
+            currentSentenceClick={this.play_current} 
+            />
           <EnglishList items={this.state.items} 
                       ref="english_list" 
                       change_current_sentence={ this.change_current_sentence }
@@ -282,7 +382,7 @@ $(window).keydown(function(e){
 
 // 载入后就开始读当前句子，算是初始化的一部分。
 // console.log(srtrendered.state.current_sentence);
-$(function(){
-  srtrendered.play_current();
-})
+// $(function(){
+//   srtrendered.play_current();
+// })
 
