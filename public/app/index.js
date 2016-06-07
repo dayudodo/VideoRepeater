@@ -213,6 +213,7 @@ var SRTApp = _react2.default.createClass({
     var item = srtArray[index];
     if (item) {
       this.setState({ current_index: index });
+      $(_reactDom2.default.findDOMNode(this.refs.english_list)).val(index); //播放的时候就定义到其文字所在位置
       //保存当前index.播放哪个就保存哪个
       current_media.filenames[current_media.filename_index].index = index;
       arr_index.push(index);arr_index.shift();

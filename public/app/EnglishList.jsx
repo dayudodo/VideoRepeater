@@ -9,7 +9,9 @@ var ListItem= React.createClass({
 		return false; //有状态的组件其实比下面无状态组件的速度要更快，无状态的话每次都会生成！
 	},
 	render(){
-		return <option onClick={this.props.onClick } title={this.props.item.chinese}>{this.props.item.english}</option>
+		return <option onClick={this.props.onClick } title={this.props.item.chinese} value={this.props.index}>
+			{this.props.item.english}
+		</option>
 	}
 })
 // var ListItem = function(props){
@@ -34,9 +36,9 @@ var EnglishList = React.createClass({
 		this.props.change_current_sentence(item);
 	},
 	render() {
-		return <select multiple className="form-control col-sm-12 col-md-12 col-lg-12" size="20" id="english_list">
+		return <select  className="form-control col-sm-12 col-md-12 col-lg-12" size="20" id="english_list">
 		    {this.props.items.map((item,index)=> (
-				<ListItem key={ Date.now() + index }  onClick={this.handleClick.bind(null,item)}  item={item}/>
+				<ListItem key={ Date.now() + index }  onClick={this.handleClick.bind(null,item)}  item={item} index={index}/>
 			))}
 		  </select>
 	}

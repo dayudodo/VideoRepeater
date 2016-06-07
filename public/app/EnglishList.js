@@ -19,7 +19,7 @@ var ListItem = _react2.default.createClass({
 	render: function render() {
 		return _react2.default.createElement(
 			'option',
-			{ onClick: this.props.onClick, title: this.props.item.chinese },
+			{ onClick: this.props.onClick, title: this.props.item.chinese, value: this.props.index },
 			this.props.item.english
 		);
 	}
@@ -51,9 +51,9 @@ var EnglishList = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'select',
-			{ multiple: true, className: 'form-control col-sm-12 col-md-12 col-lg-12', size: '20', id: 'english_list' },
+			{ className: 'form-control col-sm-12 col-md-12 col-lg-12', size: '20', id: 'english_list' },
 			this.props.items.map(function (item, index) {
-				return _react2.default.createElement(ListItem, { key: Date.now() + index, onClick: _this.handleClick.bind(null, item), item: item });
+				return _react2.default.createElement(ListItem, { key: Date.now() + index, onClick: _this.handleClick.bind(null, item), item: item, index: index });
 			})
 		);
 	}
