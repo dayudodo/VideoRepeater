@@ -18,7 +18,7 @@ var ListItem = _react2.default.createClass({
 	},
 	render: function render() {
 		return _react2.default.createElement(
-			'li',
+			'option',
 			{ onClick: this.props.onClick, title: this.props.item.chinese },
 			this.props.item.english
 		);
@@ -50,8 +50,8 @@ var EnglishList = _react2.default.createClass({
 		var _this = this;
 
 		return _react2.default.createElement(
-			'ul',
-			{ className: 'english_list_class' },
+			'select',
+			{ multiple: true, className: 'form-control col-sm-12 col-md-12 col-lg-12', size: '20', id: 'english_list' },
 			this.props.items.map(function (item, index) {
 				return _react2.default.createElement(ListItem, { key: Date.now() + index, onClick: _this.handleClick.bind(null, item), item: item });
 			})

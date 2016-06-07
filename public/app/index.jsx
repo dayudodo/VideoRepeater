@@ -18,6 +18,8 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 
+// import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+
 
 injectTapEventPlugin();
 
@@ -25,6 +27,8 @@ injectTapEventPlugin();
 var Timer = require('./timer');
 var CurrentSentence= require('./currentSentence');
 var EnglishList = require('./EnglishList');
+import TableEnglishList from './TableEnglishList';
+// var {TableEnglishList} = require('./TableEnglishList'); //类的办法似乎需要使用import才能够正常的使用，es6的就按照es6的来。
 
 var fs = require('fs');
 var srt = require("srt").fromString;
@@ -343,25 +347,21 @@ var SRTApp= React.createClass({
               />
               <button className="btn btn-default">下</button>
             </form>
-            <form onSubmit={this.handleFilter}>
-              <label title="过滤后只会显示那些包含过滤词的句子">过滤：</label>
-              <TextField
-                id="filter-field-controlled"
-                value={this.state.textFilter}
-                onChange={this.filterChange}
-                />
-            </form>
+
           
           <CurrentSentence 
             current_sentence={ this.state.current_sentence } 
             prev_sentence={this.prev_sentence} 
             next_sentence={this.next_sentence} 
             currentSentenceClick={this.play_current} 
-            />
+          />
+
+          
           <EnglishList items={this.state.items} 
                       ref="english_list" 
                       change_current_sentence={ this.change_current_sentence }
                       />
+
         </div>
         </MuiThemeProvider>
     );
@@ -382,6 +382,9 @@ $(window).keydown(function(e){
   };
 })
 
+$(document).ready(function(){  
+    // $("#english_list").scrollQ();  
+});  
 // 载入后就开始读当前句子，算是初始化的一部分。
 // console.log(srtrendered.state.current_sentence);
 // $(function(){

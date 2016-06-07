@@ -68,13 +68,21 @@ var _starBorder = require('material-ui/svg-icons/toggle/star-border');
 
 var _starBorder2 = _interopRequireDefault(_starBorder);
 
+var _TableEnglishList = require('./TableEnglishList');
+
+var _TableEnglishList2 = _interopRequireDefault(_TableEnglishList);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 
 (0, _reactTapEventPlugin2.default)();
 
 var Timer = require('./timer');
 var CurrentSentence = require('./currentSentence');
 var EnglishList = require('./EnglishList');
+
+// var {TableEnglishList} = require('./TableEnglishList'); //类的办法似乎需要使用import才能够正常的使用，es6的就按照es6的来。
 
 var fs = require('fs');
 var srt = require("srt").fromString;
@@ -436,20 +444,6 @@ var SRTApp = _react2.default.createClass({
             '下'
           )
         ),
-        _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleFilter },
-          _react2.default.createElement(
-            'label',
-            { title: '过滤后只会显示那些包含过滤词的句子' },
-            '过滤：'
-          ),
-          _react2.default.createElement(_TextField2.default, {
-            id: 'filter-field-controlled',
-            value: this.state.textFilter,
-            onChange: this.filterChange
-          })
-        ),
         _react2.default.createElement(CurrentSentence, {
           current_sentence: this.state.current_sentence,
           prev_sentence: this.prev_sentence,
@@ -487,6 +481,9 @@ $(window).keydown(function (e) {
   };
 });
 
+$(document).ready(function () {
+  // $("#english_list").scrollQ(); 
+});
 // 载入后就开始读当前句子，算是初始化的一部分。
 // console.log(srtrendered.state.current_sentence);
 // $(function(){
