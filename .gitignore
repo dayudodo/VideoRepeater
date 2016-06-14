@@ -1,4 +1,5 @@
 node_modules
-media
 _gsdata_
 npm-debug.log
+*.mp3
+*.mp4

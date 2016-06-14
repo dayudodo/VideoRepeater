@@ -102,12 +102,13 @@ function set_current_media(media_index) {
 
   var media_param = G_media.video[media_index];
   var mpObj = media_param.filenames[media_param.filename_index];
-  var mpFileName = 'media/' + mpObj.medianame;
-  var srtFileName = 'subtitle/' + mpObj.srtname;
+  var mpFileName = 'media/' + media_param.name + '/' + mpObj.medianame;
+  var srtFileName = 'media/' + media_param.name + '/' + mpObj.srtname;
   var local_path = require('path');
   var local_mpfile = local_path.resolve('.', mpFileName);
   var local_srtfile = local_path.resolve('.', srtFileName);
   // 判断媒体及字幕文件是否存在
+  console.log(local_mpfile, local_srtfile);
   if (fs.existsSync(local_mpfile) || fs.existsSync(local_srtfile)) {
     G_player.src = mpFileName;
   } else {
@@ -120,7 +121,7 @@ function set_current_media(media_index) {
       if (err) {
         throw new Error(err);
       } else {
-        console.log('media_index change to ' + media_index + ', name: ' + G_media.video[media_index].name);
+        console.log('media_index change to ' + media_index + ', media: ' + mpFileName);
       }
     });
   }
