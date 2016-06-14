@@ -1,44 +1,182 @@
 {
-	"video":[
-		{
-			"name":"croods",
-			"description":"布鲁克一家",
-			"medianame":"croods.mp4",
-			"srtname":"croods.srt",
-			"index":0
-		},
-		{
-			"name":"panda1",
-			"description":"功夫熊猫1",
-			"medianame":"panda1.mp4",
-			"srtname":"panda1.srt",
-			"index":0
-		}
-	],
-	"sound":[
-		{
-			"name":"secret garden",
-			"description":"秘密花园",
-			"filenames":[
-				{
-					"name":"1",
-					"description":"",
-					"medianame":"1.mp3",
-					"index":0
-				},
-				{
-					"name":"2",
-					"description":"",
-					"medianame":"2.mp3",
-					"index":0
-				},
-				{
-					"name":"3",
-					"description":"",
-					"medianame":"3.mp3",
-					"index":0
-				}
-			]
-		}
-	]
+  "media_index": 1,
+  "video": [
+    {
+      "name": "croods",
+      "description": "疯狂原始人",
+      "image": "croods.jpg",
+      "filename_index": 0,
+      "other": "",
+      "filenames": [
+        {
+          "name": "1",
+          "description": "1",
+          "medianame": "croods.mp4",
+          "srtname": "croods.srt",
+          "editor": "dodo",
+          "index": 205
+        }
+      ]
+    },
+    {
+      "name": "panda1",
+      "description": "功夫熊猫1",
+      "image": "panda1.jpg",
+      "filename_index": 0,
+      "other": "",
+      "filenames": [
+        {
+          "name": "1",
+          "description": "1",
+          "medianame": "panda1.mp4",
+          "srtname": "panda1.srt",
+          "editor": "dodo",
+          "index": 78
+        }
+      ]
+    },
+    {
+      "name": "secret_garden",
+      "description": "秘密花园",
+      "image": "garden.jpg",
+      "featured": true,
+      "filename_index": 2,
+      "other": "",
+      "filenames": [
+        {
+          "name": "1",
+          "description": "",
+          "medianame": "01.mp3",
+          "srtname": "01.srt",
+          "index": 0
+        },
+        {
+          "name": "2",
+          "description": "",
+          "medianame": "02.mp3",
+          "srtname": "02.srt",
+          "index": 0
+        },
+        {
+          "name": "3",
+          "description": "",
+          "medianame": "03.mp3",
+          "srtname": "3.srt",
+          "index": 0
+        },
+        {
+          "name": "4",
+          "description": "",
+          "medianame": "04.mp3",
+          "srtname": "04.srt",
+          "index": 0
+        },
+        {
+          "name": "5",
+          "description": "",
+          "medianame": "05.mp3",
+          "srtname": "05.srt",
+          "index": 0
+        },
+        {
+          "name": "6",
+          "description": "",
+          "medianame": "06.mp3",
+          "srtname": "06.srt",
+          "index": 0
+        },
+        {
+          "name": "7",
+          "description": "",
+          "medianame": "07.mp3",
+          "srtname": "07.srt",
+          "index": 0
+        },
+        {
+          "name": "8",
+          "description": "",
+          "medianame": "08.mp3",
+          "srtname": "08.srt",
+          "index": 0
+        },
+        {
+          "name": "9",
+          "description": "",
+          "medianame": "09.mp3",
+          "srtname": "09.srt",
+          "index": 0
+        },
+        {
+          "name": "10",
+          "description": "",
+          "medianame": "10.mp3",
+          "srtname": "10.srt",
+          "index": 0
+        },
+        {
+          "name": "11",
+          "description": "",
+          "medianame": "11.mp3",
+          "srtname": "11.srt",
+          "index": 0
+        },
+        {
+          "name": "12",
+          "description": "",
+          "medianame": "12.mp3",
+          "srtname": "12.srt",
+          "index": 0
+        },
+        {
+          "name": "13",
+          "description": "",
+          "medianame": "13.mp3",
+          "srtname": "13.srt",
+          "index": 0
+        },
+        {
+          "name": "14",
+          "description": "",
+          "medianame": "14.mp3",
+          "srtname": "14.srt",
+          "index": 0
+        },
+        {
+          "name": "15",
+          "description": "",
+          "medianame": "15.mp3",
+          "srtname": "15.srt",
+          "index": 0
+        },
+        {
+          "name": "16",
+          "description": "",
+          "medianame": "16.mp3",
+          "srtname": "16.srt",
+          "index": 0
+        },
+        {
+          "name": "17",
+          "description": "",
+          "medianame": "17.mp3",
+          "srtname": "17.srt",
+          "index": 0
+        },
+        {
+          "name": "18",
+          "description": "",
+          "medianame": "18.mp3",
+          "srtname": "18.srt",
+          "index": 0
+        },
+        {
+          "name": "19",
+          "description": "",
+          "medianame": "19.mp3",
+          "srtname": "19.srt",
+          "index": 0
+        }
+      ]
+    }
+  ]
 }

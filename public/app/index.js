@@ -92,7 +92,7 @@ var srtArray;
 var current_media;
 var arr_index = new Array(); //用于判断与上一次的索引相同与否
 
-function set_current_media(media_index) {
+function set_current_media(media_index, filename_index) {
 
   // 换片看了，自然media_index也要变，并且还得把变化保存起来。
   if (typeof media_index != "string" && typeof media_index != "number") {
@@ -101,7 +101,11 @@ function set_current_media(media_index) {
   };
 
   var media_param = G_media.video[media_index];
-  var mpObj = media_param.filenames[media_param.filename_index];
+  //如果有filename_index的参数，就用这个参数，否则就读取media.json中的filename_index
+  var which_index = filename_index ? filename_index : media_param.filename_index;
+  media_param.filename_index = which_index;
+  var mpObj = media_param.filenames[which_index];
+
   var mpFileName = 'media/' + media_param.name + '/' + mpObj.medianame;
   var srtFileName = 'media/' + media_param.name + '/' + mpObj.srtname;
   var local_path = require('path');
@@ -117,7 +121,7 @@ function set_current_media(media_index) {
 
   if (Number(G_media.media_index) != Number(media_index)) {
     G_media.media_index = media_index;
-    fs.writeFile('media.json', JSON.stringify(G_media), function (err) {
+    fs.writeFile('media.json', JSON.stringify(G_media, null, "\t"), function (err) {
       if (err) {
         throw new Error(err);
       } else {
@@ -128,7 +132,8 @@ function set_current_media(media_index) {
 
   // 注意需要加上utf-8, 需要使用Sync同步读取、
   // 不然下面的items获取不到值。
-  var data = srt(fs.readFileSync(srtFileName, 'utf-8'));
+  var file_content = fs.readFileSync(srtFileName, 'utf-8').replace(/\r\n/g, '\n');
+  var data = srt(file_content);
   for (var index in data) {
     var _data$index$text$spli = data[index].text.split('\n');
     // data[index]["english"]= data[index].text.split('\n')[0]
@@ -303,8 +308,18 @@ var SRTApp = _react2.default.createClass({
   handleSubMovieDialogClose: function handleSubMovieDialogClose() {
     this.setState({ subMovieOpen: false });
   },
-  change_filename: function change_filename(filename_index) {
-    console.log("filename_index:", filename_index);
+  change_filename: function change_filename(index, filename_index) {
+    // console.log("media",G_media.video[index].name);
+    // set_current_media(index, filename_index)
+    set_current_media(index, filename_index);
+    var mpfile_index = current_media.filenames[filename_index].index;
+    this.setState({
+      items: srtArray,
+      current_index: mpfile_index,
+      current_sentence: srtArray[mpfile_index]
+    });
+    this.handleSubMovieDialogClose();
+    this.handleClose();
   },
   componentDidMount: function componentDidMount() {
     this.play_current();
@@ -414,7 +429,7 @@ var SRTApp = _react2.default.createClass({
                           video.filenames.map(function (filename, filename_index) {
                             return _react2.default.createElement(_RaisedButton2.default, { key: filename_index,
                               label: filename.name,
-                              onClick: _this2.change_filename.bind(null, filename_index),
+                              onClick: _this2.change_filename.bind(null, index, filename_index),
                               style: styles.hideBtnWidth });
                           })
                         ) : null
