@@ -1,3 +1,6 @@
+'use strict';
+
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -30,7 +33,8 @@ var EnglishList = require('./EnglishList');
 import TableEnglishList from './TableEnglishList';
 // var {TableEnglishList} = require('./TableEnglishList'); //类的办法似乎需要使用import才能够正常的使用，es6的就按照es6的来。
 
-var fs = require('fs');
+const fs = global.require('fs'); //如果直接使用require，可能使用的是windows.require。
+// import fs from 'fs'
 var srt = require("srt").fromString;
 
 var hideSubtitle = false;
@@ -52,17 +56,19 @@ function set_current_media(media_index, filename_index){
   media_param.filename_index= which_index; 
   var mpObj=  media_param.filenames[which_index];
 
-  var mpFileName=`media/${media_param.name}/${mpObj.medianame}`
-  var srtFileName=`media/${media_param.name}/${mpObj.srtname}`
-  var local_path= require('path')
-  var local_mpfile= local_path.resolve('.',mpFileName)
-  var local_srtfile = local_path.resolve('.',srtFileName)
+  var mpFileName=`./media/${media_param.name}/${mpObj.medianame}`
+  var srtFileName=`./media/${media_param.name}/${mpObj.srtname}`
+  var path= require('path')
+  // var local_mpfile= path.resolve('.',mpFileName)
+  // var local_srtfile = path.resolve('.',srtFileName)
+  var local_mpfile= mpFileName
+  var local_srtfile = srtFileName
   // 判断媒体及字幕文件是否存在
   console.log(local_mpfile,local_srtfile)
-  if (fs.existsSync(local_mpfile) || fs.existsSync(local_srtfile) ){
+  if (fs.existsSync(local_mpfile) || fs.accessSync(local_srtfile) ){
     G_player.src = mpFileName
   }else{
-    throw new Error(`can't find ${mpFileName} or ${srtFileName}`);
+    throw new Error(`can't find ${local_mpfile} or ${local_srtfile}`);
   }
 
   if ( Number(G_media.media_index) != Number(media_index) )  {

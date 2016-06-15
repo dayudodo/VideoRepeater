@@ -50,9 +50,16 @@
     "react-tap-event-plugin": "^1.0.0",
     "srt": "0.0.3",
     "style-loader": "^0.13.1",
+    "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
-    "nconf": "^0.8.4"
+    "babel-preset-stage-1": "^6.5.0",
+    "nconf": "^0.8.4",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.4.1",
+    "redux": "^3.5.2"
   }
 }

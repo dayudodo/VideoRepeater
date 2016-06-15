@@ -1,8 +1,10 @@
+var webpack = require('webpack');
 var path = require('path');
 var nodeModulesPath = path.resolve(__dirname, 'node_modules');
 
 module.exports = {
-    entry: path.resolve(__dirname, 'js/controller.js'),
+    devtool: 'source-map',
+    entry: path.resolve(__dirname, 'public/app/index.jsx'),
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
@@ -10,15 +12,20 @@ module.exports = {
     module: {
     loaders: [
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
+        exclude: /node_modules/,
+        test: /\.jsx$/,
+        loader: 'babel',
         query: {
-          presets: ['es2015', 'react']
+          presets: ['react', 'es2015', 'stage-1']
         }
       }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
-  }
+    extensions: ['',  '.jsx','.js']
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
+  ]
 };
