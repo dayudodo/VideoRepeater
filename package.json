@@ -4,8 +4,8 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "build": "webpack --progress --colors",
-    "start": "gulp watch",
+    "build": "webpack --progress --colors --watch",
+    "start": "webpack --watch",
     "win": "node_modules\\electron-prebuilt\\dist\\electron .",
     "osx": "node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron ."
   },
@@ -28,6 +28,7 @@
   "devDependencies": {
     "angular": "^1.5.5",
     "babel-core": "^6.9.1",
+    "babel-eslint": "^6.0.4",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",

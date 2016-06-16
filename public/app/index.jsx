@@ -27,7 +27,7 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 injectTapEventPlugin();
 
 
-var Timer = require('./timer');
+var Timer = require('./timer'); //一引用就可以在界面中显示出时间段
 var CurrentSentence= require('./currentSentence');
 var EnglishList = require('./EnglishList');
 import TableEnglishList from './TableEnglishList';
@@ -37,16 +37,15 @@ const fs = global.require('fs'); //如果直接使用require，可能使用的�
 // import fs from 'fs'
 var srt = require("srt").fromString;
 
-var hideSubtitle = false;
 var srtArray;
 var current_media;
-var arr_index=new Array(); //用于判断与上一次的索引相同与否
+var arr_index=new Array(); //索引数组，用于判断与上一次的索引相同与否
 
 function set_current_media(media_index, filename_index){
 
   // 换片看了，自然media_index也要变，并且还得把变化保存起来。
   if ( (typeof(media_index) != "string") && (typeof(media_index) != "number") ) { 
-    console.log(media_index);
+    console.log(`media_index:${media_index}`);
     throw new Error('media_index should be a number')
   };
 
@@ -118,6 +117,7 @@ var SRTApp= React.createClass({
       , prev_search_text: ''
       , value: 1
       , open:false
+      , hideSubtitle:false
       , subMovieOpen: false
       , repeat_times: 1 };
   },
@@ -165,7 +165,7 @@ var SRTApp= React.createClass({
       //保存当前index.播放哪个就保存哪个
       current_media.filenames[current_media.filename_index].index = index;
       arr_index.push(index); arr_index.shift(); 
-      console.log(arr_index)
+      // console.log(arr_index)
       if( arr_index[0] != arr_index[1] ){
         fs.writeFile('media.json', JSON.stringify(G_media), (err)=>{
           if (err) {throw new Error(err)}
@@ -204,10 +204,16 @@ var SRTApp= React.createClass({
   },
   hideOrShowSubtitle:function(e){
     e.preventDefault();
-    this.setState({hide: !this.state.hide});
+    this.setState({hideSubtitle: !this.state.hideSubtitle});
     $(ReactDOM.findDOMNode(this.refs.english_list)).toggleClass('hidden'); 
     //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
-    //不过只把hide作为布尔变量来使用有点儿浪费的赶脚
+    //不过只把hideSubtitle作为布尔变量来使用有点儿浪费的赶脚
+  },
+  hideOrShowAll:function(e){
+    e.preventDefault()
+    this.hideOrShowSubtitle(e)
+    this.setState({hideAll: !this.state.hideAll});
+    $(ReactDOM.findDOMNode(this.refs.all_display)).toggleClass('hidden'); 
   },
   handleFilter:function(e){
     e.preventDefault();
@@ -289,104 +295,106 @@ var SRTApp= React.createClass({
           />,
         ];
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme()}>
-       <div>
-          <form class="form-inline">
-            <div class="form-group">
-              <label>重复次数：</label>
-              <SelectField
-                       value={this.state.repeat_times}
-                       onChange={this.handleRepeatTimes}
-                       style={styles.customWidth}
-                     >
-                       <MenuItem value={1} primaryText="1" />
-                       <MenuItem value={2} primaryText="2" />
-                       <MenuItem value={3} primaryText="3" />
-              </SelectField>
-              <RaisedButton label={ this.state.hide? '显示字幕': '隐藏字幕'} onClick={this.hideOrShowSubtitle} style={styles.hideBtnWidth}/>
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <div comment="just a container to include material-ui elements">
+         <RaisedButton label={ this.state.hideAll? '全显示': '躲起来'} onClick={this.hideOrShowAll} style={styles.hideBtnWidth}/>
+           <div ref="all_display">
+            <form class="form-inline">
+              <div class="form-group">
+                <label>重复次数：</label>
+                <SelectField
+                         value={this.state.repeat_times}
+                         onChange={this.handleRepeatTimes}
+                         style={styles.customWidth}
+                       >
+                         <MenuItem value={1} primaryText="1" />
+                         <MenuItem value={2} primaryText="2" />
+                         <MenuItem value={3} primaryText="3" />
+                </SelectField>
+                <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={this.hideOrShowSubtitle} style={styles.hideBtnWidth}/>
 
 
-              <RaisedButton
-                label="设置"
-                onTouchTap={this.handleToggle}
-              />
-              <Drawer
-                docked={false}
-                width={500}
-                open={this.state.open}
-                onRequestChange={(open) => this.setState({open})}
-              >
-                <div style={styles.root}>
-                  <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
-                  <GridList
-                    cellHeight={200}
-                    style={styles.gridList}
-                  >
-                    { 
-                      /* featured用来指示是否需要显示更下一级的各种菜单，以及用来控制是否显示对话框，如果filenames数组只有一个值，默认是不显示对话框的 */
-                      G_media.video.map((video,index) => (
-                      <GridTile
-                        key={ index }
-                        title={ video.description }
-                        titlePosition="top"
-                        titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
-                        cols={ video.featured ? 2 : 1 }
-                        rows={ video.featured ? 2 : 1 }
-                        onTouchTap={ video.featured ? this.handleSubMovieDialog : this.handleMovie.bind(null,video,index) }
-                        subtitle=
-                          {video.featured? 
-                                  <Dialog
-                                    title={video.description}
-                                    actions={subMovieActions}
-                                    modal={false}
-                                    open={this.state.subMovieOpen}
-                                    onRequestClose={this.handleSubMovieDialogClose}
-                                  >
-                                    
-                                    {video.filenames.map((filename, filename_index)=>(
-                                      <RaisedButton key={filename_index}
-                                      label={ filename.name }
-                                      onClick={this.change_filename.bind(null, index, filename_index)}
-                                      style={styles.hideBtnWidth} />
-                                      ))}
-                                  </Dialog> : null
-                          }
-                      >
-                        <img src={`./image/${ video.image }`} alt={video.name} />
-                      </GridTile>
-                    )) }
-                  </GridList>
-                </div>
-              </Drawer>
-            </div>
-          </form>
-          
-            <form onSubmit={this.handleSearchSubmit} id="search_form">
-              <label>搜索：</label>
-              <TextField
-                id="text-field-controlled"
-                value={this.state.text}
-                onChange={this.onSearchChange}
-              />
-              <button className="btn btn-default">下</button>
+                <RaisedButton
+                  label="设置"
+                  onTouchTap={this.handleToggle}
+                />
+                <Drawer
+                  docked={false}
+                  width={500}
+                  open={this.state.open}
+                  onRequestChange={(open) => this.setState({open})}
+                >
+                  <div style={styles.root}>
+                    <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
+                    <GridList
+                      cellHeight={200}
+                      style={styles.gridList}
+                    >
+                      { 
+                        /* featured用来指示是否需要显示更下一级的各种菜单，以及用来控制是否显示对话框，如果filenames数组只有一个值，默认是不显示对话框的 */
+                        G_media.video.map((video,index) => (
+                        <GridTile
+                          key={ index }
+                          title={ video.description }
+                          titlePosition="top"
+                          titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+                          cols={ video.featured ? 2 : 1 }
+                          rows={ video.featured ? 2 : 1 }
+                          onTouchTap={ video.featured ? this.handleSubMovieDialog : this.handleMovie.bind(null,video,index) }
+                          subtitle=
+                            {video.featured? 
+                                    <Dialog
+                                      title={video.description}
+                                      actions={subMovieActions}
+                                      modal={false}
+                                      open={this.state.subMovieOpen}
+                                      onRequestClose={this.handleSubMovieDialogClose}
+                                    >
+                                      
+                                      {video.filenames.map((filename, filename_index)=>(
+                                        <RaisedButton key={filename_index}
+                                        label={ filename.name }
+                                        onClick={this.change_filename.bind(null, index, filename_index)}
+                                        style={styles.hideBtnWidth} />
+                                        ))}
+                                    </Dialog> : null
+                            }
+                        >
+                          <img src={`./image/${ video.image }`} alt={video.name} />
+                        </GridTile>
+                      )) }
+                    </GridList>
+                  </div>
+                </Drawer>
+              </div>
             </form>
+            
+              <form onSubmit={this.handleSearchSubmit} id="search_form">
+                <label>搜索：</label>
+                <TextField
+                  id="text-field-controlled"
+                  value={this.state.text}
+                  onChange={this.onSearchChange}
+                />
+                <button className="btn btn-default">下</button>
+              </form>
 
-          
-          <CurrentSentence 
-            current_sentence={ this.state.current_sentence } 
-            prev_sentence={this.prev_sentence} 
-            next_sentence={this.next_sentence} 
-            currentSentenceClick={this.play_current} 
-          />
+            
+            <CurrentSentence 
+              current_sentence={ this.state.current_sentence } 
+              prev_sentence={this.prev_sentence} 
+              next_sentence={this.next_sentence} 
+              currentSentenceClick={this.play_current} 
+            />
 
-          
-          <EnglishList items={this.state.items} 
-                      ref="english_list" 
-                      change_current_sentence={ this.change_current_sentence }
-                      />
-
-        </div>
-        </MuiThemeProvider>
+            
+            <EnglishList items={this.state.items} 
+                        ref="english_list" 
+                        change_current_sentence={ this.change_current_sentence }
+                        />
+           </div>
+      </div>
+    </MuiThemeProvider>
     );
   }
 });
