@@ -27,19 +27,19 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 injectTapEventPlugin();
 
 
-var Timer = require('./timer'); //一引用就可以在界面中显示出时间段
-var CurrentSentence= require('./currentSentence');
-var EnglishList = require('./EnglishList');
+import Timer   from './timer' //一引用就可以在界面中显示出时间段
+import CurrentSentence  from './currentSentence'
+import EnglishList   from './EnglishList'
 import TableEnglishList from './TableEnglishList';
 // var {TableEnglishList} = require('./TableEnglishList'); //类的办法似乎需要使用import才能够正常的使用，es6的就按照es6的来。
 
 const fs = global.require('fs'); //如果直接使用require，可能使用的是windows.require。
 // import fs from 'fs'
-var srt = require("srt").fromString;
+let srt = require("srt").fromString;
 
-var srtArray;
-var current_media;
-var arr_index=new Array(); //索引数组，用于判断与上一次的索引相同与否
+let srtArray;
+let current_media;
+let arr_index=new Array(); //索引数组，用于判断与上一次的索引相同与否
 
 function set_current_media(media_index, filename_index){
 
@@ -49,25 +49,22 @@ function set_current_media(media_index, filename_index){
     throw new Error('media_index should be a number')
   };
 
-  var media_param = G_media.video[media_index]
+  let media_param = G_media.video[media_index]
   //如果有filename_index的参数，就用这个参数，否则就读取media.json中的filename_index
-  var which_index = filename_index? filename_index : media_param.filename_index;
+  let which_index = filename_index? filename_index : media_param.filename_index;
   media_param.filename_index= which_index; 
-  var mpObj=  media_param.filenames[which_index];
+  let mpObj=  media_param.filenames[which_index];
 
-  var mpFileName=`./media/${media_param.name}/${mpObj.medianame}`
-  var srtFileName=`./media/${media_param.name}/${mpObj.srtname}`
-  var path= require('path')
-  // var local_mpfile= path.resolve('.',mpFileName)
-  // var local_srtfile = path.resolve('.',srtFileName)
-  var local_mpfile= mpFileName
-  var local_srtfile = srtFileName
+  let mpFileName=`./media/${media_param.name}/${mpObj.medianame}`
+  let srtFileName=`./media/${media_param.name}/${mpObj.srtname}`
+  let path= require('path')
+
   // 判断媒体及字幕文件是否存在
-  console.log(local_mpfile,local_srtfile)
-  if (fs.existsSync(local_mpfile) || fs.accessSync(local_srtfile) ){
+  console.log(mpFileName,srtFileName)
+  if (fs.existsSync(mpFileName) || fs.accessSync(srtFileName) ){
     G_player.src = mpFileName
   }else{
-    throw new Error(`can't find ${local_mpfile} or ${local_srtfile}`);
+    throw new Error(`can't find ${mpFileName} or ${srtFileName}`);
   }
 
   if ( Number(G_media.media_index) != Number(media_index) )  {
@@ -76,24 +73,23 @@ function set_current_media(media_index, filename_index){
       if (err) {throw new Error(err)}
         else
       {
-        console.log(`media_index change to ${media_index}, media: ${mpFileName}`);
+        // console.log(`media_index change to ${media_index}, media: ${mpFileName}`);
       }
     })
   }
 
-
   // 注意需要加上utf-8, 需要使用Sync同步读取、
   // 不然下面的items获取不到值。
-  var file_content= fs.readFileSync(srtFileName,'utf-8').replace(/\r\n/g,'\n')
-  var data = srt(file_content);
-  for(var index in data){
+  let file_content= fs.readFileSync(srtFileName,'utf-8').replace(/\r\n/g,'\n')
+  let data = srt(file_content);
+  for(let index in data){
     // data[index]["english"]= data[index].text.split('\n')[0]
     // data[index]["chinese"]= data[index].text.split('\n')[1]
     [ data[index]["english"],data[index]["chinese"] ] = data[index].text.split('\n')
   }
 
   srtArray= new Array(); //需要生成个新的字幕数组，不然就总是会把以前的给加上。
-  for(var index in data){
+  for(let index in data){
     srtArray= srtArray.concat(data[index]);
   }
   current_media = media_param;
@@ -119,6 +115,7 @@ var SRTApp= React.createClass({
       , open:false
       , hideSubtitle:false
       , subMovieOpen: false
+      , autoContinue: false
       , repeat_times: 1 };
   },
   onSearchChange: function(e) {
@@ -189,6 +186,36 @@ var SRTApp= React.createClass({
   },
   next_sentence:function(){
     this.play_sentence(this.state.current_index + 1)
+  },
+  playAllAfter: function(){ //播放所有剩下的连续片段
+    //需要mediaPlayer的帮助才好播放下一个，或者是把数组传递进去，由mediaplayer来决定何时播放。
+    
+    // let count= this.state.items.length
+    // let i= current_index;
+    // currentItem = this.state.items[i];
+    // MediaPlayer(currentItem.startTime/1000, currentItem.endTime/1000,()=>{
+    //   this.setState({current_index: current_index+1},()=>{
+    //     this.play_sentence();
+    //   })
+    // })
+    this.setState({autoContinue: !this.state.autoContinue},()=>{
+      // const next_sentence= this.next_sentence;
+      if (this.state.autoContinue) {
+        G_event.on('play_over_event',()=>{
+          console.log("complete at :", new Date());
+          if (this.state.current_index< this.state.items.length) {
+            setTimeout(()=>{
+              this.next_sentence()
+              // console.log("can play in Interval.")
+            },150)
+            
+          };
+        })
+      }else{
+        G_event.removeAllListeners();
+      }
+    })
+
   },
   change_current_sentence:function(item){
     this.setState({current_sentence: item});  
@@ -298,6 +325,7 @@ var SRTApp= React.createClass({
     <MuiThemeProvider muiTheme={getMuiTheme()}>
       <div comment="just a container to include material-ui elements">
          <RaisedButton label={ this.state.hideAll? '全显示': '躲起来'} onClick={this.hideOrShowAll} style={styles.hideBtnWidth}/>
+         <RaisedButton label={ this.state.autoContinue? '取消连续':'自动连续'} onClick={this.playAllAfter} style={styles.hideBtnWidth}/>
            <div ref="all_display">
             <form class="form-inline">
               <div class="form-group">

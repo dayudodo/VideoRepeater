@@ -15,7 +15,6 @@
       delete module;
     </script>
     <script src="./node_modules/jquery/dist/jquery.js"></script>
-    <script src="./public/app/scroll.js"></script>
 
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
@@ -53,12 +52,14 @@
 </body>
 
   <script>
-    // You can also require other files to run in this process
+    //所有的全局变量都在此定义
     G_player= document.getElementById('player')
-    G_repeat_times = 1
+    G_repeat_times = 1  //重复次数
     G_media = JSON.parse(require('fs').readFileSync('media.json','utf-8'))
+    let EventEmitter = require('events').EventEmitter;     // 引入事件模块
+    G_event = new EventEmitter();     // 实例化事件模块
   </script>
-  <script type="text/javascript" src="./public/app/myMediaPlayer.js"></script>
+  <script type="text/javascript" src="./app/myMediaPlayer.js"></script>
   <script>//require('./public/app/index');</script>
   <script type="text/javascript" src="./build/bundle.js"></script>
 
