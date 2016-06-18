@@ -343,7 +343,7 @@ var SRTApp= React.createClass({
 
 
                 <RaisedButton
-                  label="设置"
+                  label="选课"
                   onTouchTap={this.handleToggle}
                 />
                 <Drawer
