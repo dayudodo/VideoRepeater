@@ -155,7 +155,7 @@ var SRTApp= React.createClass({
   play_sentence:function(index){
     if (index==NaN) {throw 'params index error in play_sentence().'};
     // var item= this.getEnglishList()[index];
-    var item= srtArray[index];
+    let item= srtArray[index];
     if(item){
       this.setState({current_index: index})
       $(ReactDOM.findDOMNode(this.refs.english_list)).val(index) //播放的时候就定义到其文字所在位置
@@ -295,8 +295,8 @@ var SRTApp= React.createClass({
     this.handleSubMovieDialogClose();
     this.handleClose();
   },
-  componentDidMount:function(){
-    this.play_current();
+  componentDidMount:function(){ //载入完成后开始播放，加入时间用来读取媒体文件
+    // this.play_current(); //有点儿问题，如果不播放反倒正常一些。
   },
   render: function(){
     const styles = {
@@ -443,10 +443,11 @@ $(window).keydown(function(e){
 
 $(document).ready(function(){  
     // $("#english_list").scrollQ();  
+      // setTimeout(srtrendered.play_current(),1500)
 });  
 // 载入后就开始读当前句子，算是初始化的一部分。
 // console.log(srtrendered.state.current_sentence);
 // $(function(){
-//   srtrendered.play_current();
+
 // })
 

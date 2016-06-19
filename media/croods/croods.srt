@@ -1,4 +1,4 @@
-1
+﻿1
 00:00:53,960 --> 00:00:58,670
 With every sun comes a new day. A new beginning.
 每次日出都意味着新的一天 新的开始
@@ -2214,12 +2214,12 @@ Because I will turn this family around so fast!
 我立即就可以让大家打道回府！
 
 444
-00:38:53,800 --> 00:38:55,265
+00:38:53,800 --> 00:38:55,431
 Dad, I gotta go!
 爸爸 我要嘘嘘！
 
 445
-00:38:55,265 --> 00:38:57,745
+00:38:55,431 --> 00:38:57,911
 - Come on, you can hold it. - I don't think so.
 - 得了 你能憋住的  - 憋不住
 
