@@ -60,20 +60,20 @@ function set_current_media(media_index, filename_index){
   let path= require('path')
 
   // 判断媒体及字幕文件是否存在
-  console.log(mpFileName,srtFileName)
+  // console.log(mpFileName,srtFileName)
   if (fs.existsSync(mpFileName) || fs.accessSync(srtFileName) ){
     G_player.src = mpFileName
   }else{
     throw new Error(`can't find ${mpFileName} or ${srtFileName}`);
   }
 
-  if ( Number(G_media.media_index) != Number(media_index) )  {
+  if ( Number(G_media.media_index) != Number(media_index) )  { //加入Number以免以后出现啥问题
     G_media.media_index = media_index
     fs.writeFile('media.json', JSON.stringify(G_media,null,"\t") ,(err)=>{
       if (err) {throw new Error(err)}
         else
       {
-        // console.log(`media_index change to ${media_index}, media: ${mpFileName}`);
+        console.log(`media_index change to ${media_index}, media: ${mpFileName}`);
       }
     })
   }
@@ -116,6 +116,7 @@ var SRTApp= React.createClass({
       , hideSubtitle:false
       , subMovieOpen: false
       , autoContinue: false
+      , showChinese: false
       , repeat_times: 1 };
   },
   onSearchChange: function(e) {
@@ -174,7 +175,9 @@ var SRTApp= React.createClass({
       }
       // item.click(); 
       this.setState({current_sentence: item});  //更新当然句子的显示，
-      MediaPlayer(item.startTime/1000, item.endTime/1000); 
+      let start = item.startTime/1000, end = item.endTime/1000
+      console.log('start,end',start,end)
+      MediaPlayer(start, end); 
 
     }
   },
@@ -189,15 +192,6 @@ var SRTApp= React.createClass({
   },
   playAllAfter: function(){ //播放所有剩下的连续片段
     //需要mediaPlayer的帮助才好播放下一个，或者是把数组传递进去，由mediaplayer来决定何时播放。
-    
-    // let count= this.state.items.length
-    // let i= current_index;
-    // currentItem = this.state.items[i];
-    // MediaPlayer(currentItem.startTime/1000, currentItem.endTime/1000,()=>{
-    //   this.setState({current_index: current_index+1},()=>{
-    //     this.play_sentence();
-    //   })
-    // })
     this.setState({autoContinue: !this.state.autoContinue},()=>{
       // const next_sentence= this.next_sentence;
       if (this.state.autoContinue) {
@@ -215,7 +209,6 @@ var SRTApp= React.createClass({
         G_event.removeAllListeners();
       }
     })
-
   },
   change_current_sentence:function(item){
     this.setState({current_sentence: item});  
@@ -235,6 +228,16 @@ var SRTApp= React.createClass({
     $(ReactDOM.findDOMNode(this.refs.english_list)).toggleClass('hidden'); 
     //还是jQuery操作来的方便！另外，这样也不需要ID了，因为其实逻辑非常简单
     //不过只把hideSubtitle作为布尔变量来使用有点儿浪费的赶脚
+  },
+  hideOrShowChinese:function(e){ //切换中英文显示
+    e.preventDefault();
+    this.setState({showChinese: !this.state.showChinese})
+    let newSrtArray = new Array()
+    srtArray.forEach((item)=>{
+      [item.english, item.chinese] = [item.chinese,item.english]
+      newSrtArray.push(item)
+    })
+    this.setState({items: newSrtArray});
   },
   hideOrShowAll:function(e){
     e.preventDefault()
@@ -339,7 +342,8 @@ var SRTApp= React.createClass({
                          <MenuItem value={2} primaryText="2" />
                          <MenuItem value={3} primaryText="3" />
                 </SelectField>
-                <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={this.hideOrShowSubtitle} style={styles.hideBtnWidth}/>
+                <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
+                <RaisedButton label={ this.state.showChinese? 'English': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
 
 
                 <RaisedButton
