@@ -6,7 +6,7 @@ const ReactDOM = require('react-dom');
 let ListItem= React.createClass({
 	shouldComponentUpdate(nextProps, nextState){
 		// return this.props.item != nextProps.item
-		return false //有状态的组件其实比下面无状态组件的速度要更快，无状态的话每次都会生成！
+		return false; 
 	},
 	render(){
 		return <option onClick={this.props.onClick } title={this.props.item.chinese} value={this.props.index}>

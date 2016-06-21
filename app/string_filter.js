@@ -1,6 +1,5 @@
 function string_filter(str) {
 	str
-	.replace(//,'')
 	.replace(/,\./,'') //去掉句号，逗号
 	.replace(/\s+/,' ')	//把多的空格换成一个
 	.replace(/\!\?/,'') //去掉那些个奇怪的符号  

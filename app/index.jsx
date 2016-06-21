@@ -1,6 +1,5 @@
 'use strict';
 
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -329,6 +328,7 @@ var SRTApp= React.createClass({
       <div comment="just a container to include material-ui elements">
          <RaisedButton label={ this.state.hideAll? '全显示': '躲起来'} onClick={this.hideOrShowAll} style={styles.hideBtnWidth}/>
          <RaisedButton label={ this.state.autoContinue? '取消连续':'自动连续'} onClick={this.playAllAfter} style={styles.hideBtnWidth}/>
+         <RaisedButton label="选课" onTouchTap={this.handleToggle} />
            <div ref="all_display">
             <form class="form-inline">
               <div class="form-group">
@@ -346,10 +346,6 @@ var SRTApp= React.createClass({
                 <RaisedButton label={ this.state.showChinese? 'English': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
 
 
-                <RaisedButton
-                  label="选课"
-                  onTouchTap={this.handleToggle}
-                />
                 <Drawer
                   docked={false}
                   width={500}
