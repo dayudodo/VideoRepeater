@@ -1,7 +1,7 @@
 let G_timer; 
 const freeze_at_end = true; //播放完成后，画面停在end
 
-function MediaPlayer(start,end,callback){
+function MediaPlayer(start,end,after_played){
 	//看来还是需要改变为全局变量，毕竟只有一个播放器，使用let貌似变量会消失？
 		// var startTime= start;
 		// var endTime= end;
@@ -28,7 +28,7 @@ function MediaPlayer(start,end,callback){
 				G_player.pause()
 				//播放完成后干啥
 				G_event.emit('play_over_event')
-				if(callback){callback()}
+				if(after_played){after_played()}
 			}else{
 				G_player.currentTime = start; 
 				G_player.play();

@@ -314,6 +314,7 @@ var SRTApp= React.createClass({
         overflowY: 'auto',
         marginBottom: 24,
       },
+      green:{ }
     };
     const subMovieActions = [
           <FlatButton
@@ -326,9 +327,9 @@ var SRTApp= React.createClass({
     return (
     <MuiThemeProvider muiTheme={getMuiTheme()}>
       <div comment="just a container to include material-ui elements">
-         <RaisedButton label={ this.state.hideAll? '全显示': '躲起来'} onClick={this.hideOrShowAll} style={styles.hideBtnWidth}/>
-         <RaisedButton label={ this.state.autoContinue? '取消连续':'自动连续'} onClick={this.playAllAfter} style={styles.hideBtnWidth}/>
-         <RaisedButton label="选课" onTouchTap={this.handleToggle} />
+         <RaisedButton label={ this.state.hideAll? '全显示': '躲起来'} onClick={this.hideOrShowAll} style={styles.hideBtnWidth} primary={true}/>
+         <RaisedButton label={ this.state.autoContinue? '取消连续':'自动连续'} onClick={this.playAllAfter} style={styles.hideBtnWidth }  primary={true}/>
+         <RaisedButton label="选课" onTouchTap={this.handleToggle} primary={true}/>
            <div ref="all_display">
             <form class="form-inline">
               <div class="form-group">
