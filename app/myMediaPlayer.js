@@ -14,7 +14,8 @@ function MediaPlayer(start,end,after_played){
 		if (start > end) { throw new Error("start should less than end.")};
 		if (isNaN(start) || isNaN(end)) { throw new Error('start or end should have value!')};
 		
-		let playMilli = (end-start)*1000;
+		// let playMilli = (end-start)*1000;
+		let playMilli = (end-start)*(1/G_player.playbackRate)*1000;
 
 		//多次点击可能会产生问题，所以一进入就要先取消，然后再设置新的时间段！并且G_timer是全局变量
 		if (G_timer) {clearInterval(G_timer)};

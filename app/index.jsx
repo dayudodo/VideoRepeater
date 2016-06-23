@@ -50,7 +50,7 @@ function set_current_media(media_index, filename_index){
 
   let media_param = G_media.video[media_index]
   //如果有filename_index的参数，就用这个参数，否则就读取media.json中的filename_index
-  let which_index = filename_index? filename_index : media_param.filename_index;
+  let which_index = (typeof(filename_index)!="undefined")? filename_index : media_param.filename_index;
   media_param.filename_index= which_index; 
   let mpObj=  media_param.filenames[which_index];
 
@@ -59,7 +59,7 @@ function set_current_media(media_index, filename_index){
   let path= require('path')
 
   // 判断媒体及字幕文件是否存在
-  // console.log(mpFileName,srtFileName)
+  console.log(mpFileName,srtFileName)
   if (fs.existsSync(mpFileName) || fs.accessSync(srtFileName) ){
     G_player.src = mpFileName
   }else{
@@ -87,15 +87,16 @@ function set_current_media(media_index, filename_index){
     [ data[index]["english"],data[index]["chinese"] ] = data[index].text.split('\n')
   }
 
-  srtArray= new Array(); //需要生成个新的字幕数组，不然就总是会把以前的给加上。
+  let result= new Array(); //需要生成个新的字幕数组，不然就总是会把以前的给加上。
   for(let index in data){
-    srtArray= srtArray.concat(data[index]);
+    result= result.concat(data[index]);
   }
   current_media = media_param;
   arr_index = [mpObj.index, mpObj.index];
+  return result;
 }
 
-set_current_media( G_media.media_index ) //第一次就设置成排名第一的video=>panda1
+srtArray =  set_current_media( G_media.media_index ) //第一次就设置成排名第一的video=>panda1
 
 
 var SRTApp= React.createClass({
@@ -116,7 +117,8 @@ var SRTApp= React.createClass({
       , subMovieOpen: false
       , autoContinue: false
       , showChinese: false
-      , repeat_times: 1 };
+      , repeat_times: 1
+      , play_back_rate: 1 };
   },
   onSearchChange: function(e) {
     this.setState({text: e.target.value});
@@ -265,10 +267,16 @@ var SRTApp= React.createClass({
     // console.log(value)
     G_repeat_times = value; //重复次数成为全局变量，这样，也不需要啥元素来保存值了。
   },
+  handlePlayBackRate:function(event,index,value){
+    this.setState({play_back_rate: value})
+    // console.log(value)
+    G_player.playbackRate= value;
+
+  },
   handleMovie:function(video, index){
     // console.log(video)
     // 改变当前媒体
-    set_current_media( index );
+    srtArray = set_current_media( index );
     var mpfile_index = current_media.filenames[current_media.filename_index].index
     this.setState({
         items: srtArray 
@@ -285,9 +293,9 @@ var SRTApp= React.createClass({
     this.setState({subMovieOpen:false})
   },
   change_filename:function(index, filename_index){
-    // console.log("media",G_media.video[index].name);
-    // set_current_media(index, filename_index)
-    set_current_media( index, filename_index );
+    console.log("media",G_media.video[index].name);
+    console.log("medianame", G_media.video[index].filenames[filename_index].medianame)
+    srtArray = set_current_media( index, filename_index );
     var mpfile_index = current_media.filenames[filename_index].index
     this.setState({
         items: srtArray 
@@ -342,6 +350,16 @@ var SRTApp= React.createClass({
                          <MenuItem value={1} primaryText="1" />
                          <MenuItem value={2} primaryText="2" />
                          <MenuItem value={3} primaryText="3" />
+                </SelectField>
+                <label>播放速度：</label>
+                <SelectField
+                         value={this.state.play_back_rate}
+                         onChange={this.handlePlayBackRate}
+                         style={styles.customWidth}
+                       >
+                         <MenuItem value={1} primaryText="1" />
+                         <MenuItem value={1.5} primaryText="1.5" />
+                         <MenuItem value={2} primaryText="2" />
                 </SelectField>
                 <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
                 <RaisedButton label={ this.state.showChinese? 'English': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
