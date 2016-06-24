@@ -3,20 +3,26 @@ import React from 'react';
 const ReactDOM = require('react-dom');
 
 // 生成li项，单独写出来是为了设置其shouldComponentUpdate优化显示，不然当在搜索框输入文本时会非常卡！
-let ListItem= React.createClass({
-	shouldComponentUpdate(nextProps, nextState){
-		// return this.props.item != nextProps.item
-		return false; 
-	},
-	render(){
-		return <option onClick={this.props.onClick } title={this.props.item.chinese} value={this.props.index}>
-			{this.props.item.english}
+// let ListItem= React.createClass({
+// 	shouldComponentUpdate(nextProps, nextState){
+// 		// return this.props.item != nextProps.item
+// 		return false; 
+// 	},
+// 	render(){
+// 		return <option onClick={this.props.onClick } title={this.props.item.chinese} value={this.props.index}>
+// 			{this.props.item.english}
+// 		</option>
+// 	},
+// })
+
+
+var ListItem = ({ onClick, item, index })=>{
+	return (
+		<option onClick={ onClick } title={ item.chinese } value={ index } >
+			{ item.english }
 		</option>
-	},
-})
-// var ListItem = function(props){
-// 	return <li onClick={props.onClick }>{props.item.english}</li>
-// }
+	)
+}
 
 module.exports = React.createClass({
 	componentDidMount(){

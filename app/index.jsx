@@ -332,6 +332,55 @@ var SRTApp= React.createClass({
             onTouchTap={this.handleSubMovieDialogClose}
           />,
         ];
+    const repeatTimesSelect =  <SelectField
+                           value={ this.state.repeat_times }
+                           onChange={ this.handleRepeatTimes }
+                           style={styles.customWidth}
+                          >
+                           <MenuItem value={1} primaryText="1" />
+                           <MenuItem value={2} primaryText="2" />
+                           <MenuItem value={3} primaryText="3" />
+                          </SelectField>
+    const playRate =  <SelectField
+                         value={this.state.play_back_rate}
+                         onChange={this.handlePlayBackRate}
+                         style={styles.customWidth} >
+                         <MenuItem value={1} primaryText="1" />
+                         <MenuItem value={1.5} primaryText="1.5" />
+                         <MenuItem value={2} primaryText="2" />
+                      </SelectField>                    
+    /* featured用来指示是否需要显示更下一级的各种菜单，以及用来控制是否显示对话框，如果filenames数组只有一个值，默认是不显示对话框的 */
+    const videos = G_media.video.map((video,index) => (
+                  <GridTile
+                    key={ index }
+                    title={ video.description }
+                    titlePosition="top"
+                    titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+                    cols={ video.featured ? 2 : 1 }
+                    rows={ video.featured ? 2 : 1 }
+                    onTouchTap={ video.featured ? this.handleSubMovieDialog : this.handleMovie.bind(null,video,index) }
+                    subtitle=
+                      {video.featured? 
+                              <Dialog
+                                title={video.description}
+                                actions={subMovieActions}
+                                modal={false}
+                                open={this.state.subMovieOpen}
+                                onRequestClose={this.handleSubMovieDialogClose}
+                              >
+                                
+                                {video.filenames.map((filename, filename_index)=>(
+                                  <RaisedButton key={filename_index}
+                                  label={ filename.name }
+                                  onClick={this.change_filename.bind(null, index, filename_index)}
+                                  style={styles.hideBtnWidth} />
+                                  ))}
+                              </Dialog> : null
+                      }
+                  >
+                    <img src={`./image/${ video.image }`} alt={video.name} />
+                  </GridTile>
+              ))
     return (
     <MuiThemeProvider muiTheme={getMuiTheme()}>
       <div comment="just a container to include material-ui elements">
@@ -342,28 +391,11 @@ var SRTApp= React.createClass({
             <form class="form-inline">
               <div class="form-group">
                 <label>重复次数：</label>
-                <SelectField
-                         value={this.state.repeat_times}
-                         onChange={this.handleRepeatTimes}
-                         style={styles.customWidth}
-                       >
-                         <MenuItem value={1} primaryText="1" />
-                         <MenuItem value={2} primaryText="2" />
-                         <MenuItem value={3} primaryText="3" />
-                </SelectField>
+                  { repeatTimesSelect }
                 <label>播放速度：</label>
-                <SelectField
-                         value={this.state.play_back_rate}
-                         onChange={this.handlePlayBackRate}
-                         style={styles.customWidth}
-                       >
-                         <MenuItem value={1} primaryText="1" />
-                         <MenuItem value={1.5} primaryText="1.5" />
-                         <MenuItem value={2} primaryText="2" />
-                </SelectField>
+                  { playRate }
                 <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
                 <RaisedButton label={ this.state.showChinese? 'English': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
-
 
                 <Drawer
                   docked={false}
@@ -377,39 +409,7 @@ var SRTApp= React.createClass({
                       cellHeight={200}
                       style={styles.gridList}
                     >
-                      { 
-                        /* featured用来指示是否需要显示更下一级的各种菜单，以及用来控制是否显示对话框，如果filenames数组只有一个值，默认是不显示对话框的 */
-                        G_media.video.map((video,index) => (
-                        <GridTile
-                          key={ index }
-                          title={ video.description }
-                          titlePosition="top"
-                          titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
-                          cols={ video.featured ? 2 : 1 }
-                          rows={ video.featured ? 2 : 1 }
-                          onTouchTap={ video.featured ? this.handleSubMovieDialog : this.handleMovie.bind(null,video,index) }
-                          subtitle=
-                            {video.featured? 
-                                    <Dialog
-                                      title={video.description}
-                                      actions={subMovieActions}
-                                      modal={false}
-                                      open={this.state.subMovieOpen}
-                                      onRequestClose={this.handleSubMovieDialogClose}
-                                    >
-                                      
-                                      {video.filenames.map((filename, filename_index)=>(
-                                        <RaisedButton key={filename_index}
-                                        label={ filename.name }
-                                        onClick={this.change_filename.bind(null, index, filename_index)}
-                                        style={styles.hideBtnWidth} />
-                                        ))}
-                                    </Dialog> : null
-                            }
-                        >
-                          <img src={`./image/${ video.image }`} alt={video.name} />
-                        </GridTile>
-                      )) }
+                      { videos   }
                     </GridList>
                   </div>
                 </Drawer>

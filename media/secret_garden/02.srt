@@ -111,11 +111,11 @@ There was long grass and hills.
 The grass moved in the wind.
 
 29
-00:01:53,971 --> 00:01:55,971
+00:01:53,971 --> 00:01:57,115
 There were no trees or bushes.
 
 30
-00:05:09,434 --> 00:02:01,395
+00:01:57,115 --> 00:02:01,395
 The wind made a strange sound as it moved through the grass.
 
 31
