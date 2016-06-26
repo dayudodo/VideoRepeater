@@ -37,7 +37,7 @@
 
   <div class="video_only col-sm-12 col-md-12 col-lg-12 ">
     <div class=" col-sm-6 col-md-6 col-lg-6">
-      <video id="player" width="100%">
+      <video id="player" width="100%" preload="none">
           <source type="video/mp4">
           Your browser does not support the video tag.
       </video>
@@ -50,7 +50,7 @@
 </div>
 </body>
 
-  <script>
+  <script type="text/javascript">
     //所有的全局变量都在此定义
     G_player= document.getElementById('player')
     G_repeat_times = 1  //重复次数

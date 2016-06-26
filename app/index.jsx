@@ -138,6 +138,7 @@ var SRTApp= React.createClass({
       this.setState({prev_search_text: search_text}); //有没有全局变量的办法？不用设置啥state?仅仅用来存储数据而已？this.props? ==todo
 
       for(var index = start; index < this.state.items.length; index++){
+        if (!this.state.items[index].english) { throw new Error(`need english in:${index}`)}
         var sentence = this.state.items[index].english.toLowerCase();
         if(sentence.includes(search_text.toLowerCase())){
           console.log(`${this.state.current_index} :index:${index}`);
@@ -148,7 +149,7 @@ var SRTApp= React.createClass({
           this.setState({current_index: index}); 
           break;
         }else{
-          if (this.state.items.length-1 == index) {  console.log('last sentence')};
+          if (this.state.items.length-1 == index) {  console.log('Reached last sentence!')};
         }
       }
       // alert("last word");
@@ -179,6 +180,7 @@ var SRTApp= React.createClass({
       let start = item.startTime/1000, end = item.endTime/1000
       console.log('start,end',start,end)
       MediaPlayer(start, end); 
+      if (this.state.current_index == this.state.items.length-1) { console.log('play last sentence!')}
 
     }
   },
@@ -304,6 +306,11 @@ var SRTApp= React.createClass({
     });
     this.handleSubMovieDialogClose();
     this.handleClose();
+    this.after_change_filename(index, filename_index);
+  },
+  after_change_filename:function(index, filename_index){
+    //在改变完文件名后还需要做些其它事情，比如显示当前需要播放的媒体文件名称
+    $('#title').html(G_media.video[index].filenames[filename_index].medianame)
   },
   componentDidMount:function(){ //载入完成后开始播放，加入时间用来读取媒体文件
     // this.play_current(); //有点儿问题，如果不播放反倒正常一些。
@@ -388,14 +395,23 @@ var SRTApp= React.createClass({
          <RaisedButton label={ this.state.autoContinue? '取消连续':'自动连续'} onClick={this.playAllAfter} style={styles.hideBtnWidth }  primary={true}/>
          <RaisedButton label="选课" onTouchTap={this.handleToggle} primary={true}/>
            <div ref="all_display">
-            <form class="form-inline">
               <div class="form-group">
-                <label>重复次数：</label>
-                  { repeatTimesSelect }
-                <label>播放速度：</label>
-                  { playRate }
-                <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
-                <RaisedButton label={ this.state.showChinese? 'English': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
+                <form onSubmit={this.handleSearchSubmit} id="search_form">
+                  <label>搜索：</label>
+                  <TextField
+                    id="text-field-controlled"
+                    value={this.state.text}
+                    onChange={this.onSearchChange}
+                  />
+                  <button className="btn btn-default">下</button>
+                  <label>重复次数：</label>
+                    { repeatTimesSelect }
+                  <label>播放速度：</label>
+                    { playRate }
+                  <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
+                  <RaisedButton label={ this.state.showChinese? 'English': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
+                </form>
+
 
                 <Drawer
                   docked={false}
@@ -414,24 +430,16 @@ var SRTApp= React.createClass({
                   </div>
                 </Drawer>
               </div>
-            </form>
             
-              <form onSubmit={this.handleSearchSubmit} id="search_form">
-                <label>搜索：</label>
-                <TextField
-                  id="text-field-controlled"
-                  value={this.state.text}
-                  onChange={this.onSearchChange}
-                />
-                <button className="btn btn-default">下</button>
-              </form>
+
 
             
             <CurrentSentence 
-              current_sentence={ this.state.current_sentence } 
               prev_sentence={this.prev_sentence} 
               next_sentence={this.next_sentence} 
               currentSentenceClick={this.play_current} 
+              items={this.state.items}
+              current_index={this.state.current_index}
             />
 
             
