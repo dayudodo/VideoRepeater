@@ -1,6 +1,7 @@
 'use strict';
 let G_timer; 
 const freeze_at_end = true; //播放完成后，画面停在end
+let testTimestart ;
 
 function MediaPlayer(start,end,after_played){
 	//看来还是需要改变为全局变量，毕竟只有一个播放器，使用let貌似变量会消失？
@@ -42,12 +43,14 @@ function MediaPlayer(start,end,after_played){
 				}
 			}
 		}, 10)
-		let testTimestart = new Date();
+		testTimestart= new Date();
 		console.log("time start:",testTimestart);
-		G_player.addEventListener('timeupdate',()=>{
-			console.log("load time:",new Date().getTime()- testTimestart.getTime());
-			console.log(G_player.currentTime);
-		},false)
+		// G_player.addEventListener('timeupdate',function(){
+		// 	// console.log("inside timeupdate",testTimestart);
+		// 	let testTimeEnd= new Date();
+		// 	console.log("load time:", (testTimeEnd- testTimestart));
+		// 	// console.log(G_player.currentTime);
+		// },false);
 
 		playFrontStart();
 

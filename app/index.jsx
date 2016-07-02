@@ -339,15 +339,15 @@ var SRTApp= React.createClass({
             onTouchTap={this.handleSubMovieDialogClose}
           />,
         ];
-    const repeatTimesSelect =  <SelectField
-                           value={ this.state.repeat_times }
-                           onChange={ this.handleRepeatTimes }
-                           style={styles.customWidth}
-                          >
-                           <MenuItem value={1} primaryText="1" />
-                           <MenuItem value={2} primaryText="2" />
-                           <MenuItem value={3} primaryText="3" />
-                          </SelectField>
+    const repeatTimesSelect =<SelectField
+                               value={ this.state.repeat_times }
+                               onChange={ this.handleRepeatTimes }
+                               style={styles.customWidth}
+                              >
+                               <MenuItem value={1} primaryText="1" />
+                               <MenuItem value={2} primaryText="2" />
+                               <MenuItem value={3} primaryText="3" />
+                              </SelectField>
     const playRate =  <SelectField
                          value={this.state.play_back_rate}
                          onChange={this.handlePlayBackRate}
@@ -388,6 +388,22 @@ var SRTApp= React.createClass({
                     <img src={`./image/${ video.image }`} alt={video.name} />
                   </GridTile>
               ))
+    const leftDrawer=<Drawer
+                  docked={false}
+                  width={500}
+                  open={this.state.open}
+                  onRequestChange={(open) => this.setState({open})}
+                >
+                  <div style={styles.root}>
+                    <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
+                    <GridList
+                      cellHeight={200}
+                      style={styles.gridList}
+                    >
+                      { videos   }
+                    </GridList>
+                  </div>
+                </Drawer>
     return (
     <MuiThemeProvider muiTheme={getMuiTheme()}>
       <div comment="just a container to include material-ui elements">
@@ -413,26 +429,8 @@ var SRTApp= React.createClass({
                 </form>
 
 
-                <Drawer
-                  docked={false}
-                  width={500}
-                  open={this.state.open}
-                  onRequestChange={(open) => this.setState({open})}
-                >
-                  <div style={styles.root}>
-                    <MenuItem onTouchTap={this.handleClose}>Close</MenuItem>
-                    <GridList
-                      cellHeight={200}
-                      style={styles.gridList}
-                    >
-                      { videos   }
-                    </GridList>
-                  </div>
-                </Drawer>
+                { leftDrawer }
               </div>
-            
-
-
             
             <CurrentSentence 
               prev_sentence={this.prev_sentence} 
@@ -441,13 +439,12 @@ var SRTApp= React.createClass({
               items={this.state.items}
               current_index={this.state.current_index}
             />
-
             
             <EnglishList items={this.state.items} 
                         ref="english_list" 
                         change_current_sentence={ this.change_current_sentence }
-                        />
-           </div>
+            />
+          </div>
       </div>
     </MuiThemeProvider>
     );
