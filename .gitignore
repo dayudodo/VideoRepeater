@@ -3,4 +3,5 @@ _gsdata_
 npm-debug.log
 *.mp3
 *.mp4
+*.dat
 /build/

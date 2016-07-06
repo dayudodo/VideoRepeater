@@ -375,13 +375,14 @@ var SRTApp= React.createClass({
                                 open={this.state.subMovieOpen}
                                 onRequestClose={this.handleSubMovieDialogClose}
                               >
-                                
-                                {video.filenames.map((filename, filename_index)=>(
-                                  <RaisedButton key={filename_index}
+                              {video.filenames.map((filename, filename_index)=>{
+                                let is_current_filename = (filename_index == video.filename_index) //是否是当前媒体文件，这样选择的时候会比较方便
+                                return <RaisedButton key={filename_index}
+                                  primary={ is_current_filename }
                                   label={ filename.name }
                                   onClick={this.change_filename.bind(null, index, filename_index)}
                                   style={styles.hideBtnWidth} />
-                                  ))}
+                              })}
                               </Dialog> : null
                       }
                   >
