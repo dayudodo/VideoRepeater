@@ -407,12 +407,12 @@ var SRTApp= React.createClass({
                 </Drawer>
     return (
     <MuiThemeProvider muiTheme={getMuiTheme()}>
-      <div comment="just a container to include material-ui elements">
+      <div >
          <RaisedButton label={ this.state.hideAll? '全显示': '躲起来'} onClick={this.hideOrShowAll} style={styles.hideBtnWidth} primary={true}/>
          <RaisedButton label={ this.state.autoContinue? '取消连续':'自动连续'} onClick={this.playAllAfter} style={styles.hideBtnWidth }  primary={true}/>
          <RaisedButton label="选课" onTouchTap={this.handleToggle} primary={true}/>
            <div ref="all_display">
-              <div class="form-group">
+              <div className="form-group">
                 <form onSubmit={this.handleSearchSubmit} id="search_form">
                   <label>搜索：</label>
                   <TextField
@@ -426,7 +426,7 @@ var SRTApp= React.createClass({
                   <label>播放速度：</label>
                     { playRate }
                   <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
-                  <RaisedButton label={ this.state.showChinese? 'English': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
+                  <RaisedButton label={ this.state.showChinese? '英文': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
                 </form>
 
 
