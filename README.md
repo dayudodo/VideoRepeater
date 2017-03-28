@@ -8,10 +8,10 @@
 
 
 ## 界面
-![video repeater界面](https://github.com/dayudodo/VideoRepeater/blob/master/readme/main.jpg)
+![video repeater界面](https://github.com/dayudodo/VideoRepeater/raw/master/readme/main.jpg)
 
 ## 菜单
-![video repeater菜单](https://github.com/dayudodo/VideoReapter/blob/master/readme/menu.jpg)
+![video repeater菜单](https://github.com/dayudodo/VideoRepeater/raw/master/readme/menu.jpg)
 
 
 ## 安装
