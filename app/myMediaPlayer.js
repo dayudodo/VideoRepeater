@@ -30,7 +30,7 @@ function MediaPlayer(start,end,after_played){
 		G_timer = setInterval(function(){
 			if (! freeze_at_end ) { G_player.currentTime = start }
 			if ( G_player.currentTime >= end ) {
-				console.log(G_player.currentTime)
+				console.log(`currentTime:${G_player.currentTime}`)
 				repeatTimes-=1;
 				if (repeatTimes == 0) {
 					clearInterval(G_timer);
