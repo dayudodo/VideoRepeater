@@ -14,6 +14,7 @@ var lessOptions = {
 gulp.task("default", ["server"]);  //当你直接gulp用的其实就是gulp default
 gulp.task("watch", ["server"]);  //我是直接使用gulp watch,执行的也是server,内部还是可以server
 gulp.task("start", ["server"]);  
+
 gulp.task("server", ["webpack"], function (callback) {  
     livereload.listen();
 
