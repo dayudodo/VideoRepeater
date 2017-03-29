@@ -18,7 +18,7 @@ var TableEnglishList = React.createClass ({
 	shouldComponentUpdate(nextProps, nextState){
 		// return false;
 		// return (this.props.hide != nextProps.hide) 
-		return (this.props.items != nextProps.items) ||(this.props.current_index!= nextProps.current_index) //只有当items改变的时候才会re-render! 其它情况的state改变并不会影响到这儿！
+		return (this.props.items !== nextProps.items) ||(this.props.current_index!== nextProps.current_index) //只有当items改变的时候才会re-render! 其它情况的state改变并不会影响到这儿！
 	},
 	render() {
 		var ori_this=this;

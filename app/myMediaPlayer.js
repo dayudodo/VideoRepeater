@@ -32,7 +32,7 @@ function MediaPlayer(start,end,after_played){
 			if ( G_player.currentTime >= end ) {
 				console.log(`currentTime:${G_player.currentTime}`)
 				repeatTimes-=1;
-				if (repeatTimes == 0) {
+				if (repeatTimes === 0) {
 					clearInterval(G_timer);
 					G_player.pause()
 					//播放完成后干啥

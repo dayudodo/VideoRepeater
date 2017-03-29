@@ -43,14 +43,14 @@ let arr_index=new Array(); //索引数组，用于判断与上一次的索引相
 function set_current_media(media_index, filename_index){
 
   // 换片看了，自然media_index也要变，并且还得把变化保存起来。
-  if ( (typeof(media_index) != "string") && (typeof(media_index) != "number") ) { 
+  if ( (typeof(media_index) !== "string") && (typeof(media_index) !== "number") ) { 
     console.log(`media_index:${media_index}`);
     throw new Error('media_index should be a number')
   };
 
   let media_param = G_media.video[media_index]
   //如果有filename_index的参数，就用这个参数，否则就读取media.json中的filename_index
-  let which_index = (typeof(filename_index)!="undefined")? filename_index : media_param.filename_index;
+  let which_index = (typeof(filename_index)!=="undefined")? filename_index : media_param.filename_index;
   media_param.filename_index= which_index; 
   let mpObj=  media_param.filenames[which_index];
 
@@ -66,7 +66,7 @@ function set_current_media(media_index, filename_index){
     throw new Error(`can't find ${mpFileName} or ${srtFileName}`);
   }
 
-  if ( Number(G_media.media_index) != Number(media_index) )  { //加入Number以免以后出现啥问题
+  if ( Number(G_media.media_index) !== Number(media_index) )  { //加入Number以免以后出现啥问题
     G_media.media_index = media_index
     fs.writeFile('media.json', JSON.stringify(G_media,null,"\t") ,(err)=>{
       if (err) {throw new Error(err)}
@@ -132,9 +132,9 @@ var SRTApp= React.createClass({
     let search_text = this.state.text; //state的好处是拥有历史功能？
     var english_list = this.getEnglishList();
 
-    if (search_text && search_text.length!=0) {
+    if (search_text && search_text.length!==0) {
       //如果用户新输入内容，那么就从0开始搜索，否则就是查找下一句。
-      var start= (search_text == this.state.prev_search_text)? this.state.current_index : 0 
+      var start= (search_text === this.state.prev_search_text)? this.state.current_index : 0 
       this.setState({prev_search_text: search_text}); //有没有全局变量的办法？不用设置啥state?仅仅用来存储数据而已？this.props? ==todo
 
       for(var index = start; index < this.state.items.length; index++){
@@ -142,21 +142,21 @@ var SRTApp= React.createClass({
         var sentence = this.state.items[index].english.toLowerCase();
         if(sentence.includes(search_text.toLowerCase())){
           console.log(`${this.state.current_index} :index:${index}`);
-          if (index == this.state.current_index ) {
+          if (index === this.state.current_index ) {
             continue;
           };
           english_list[index].click(); //或许是react好的地方，因为这个click已经写好了，直接复用。
           this.setState({current_index: index}); 
           break;
         }else{
-          if (this.state.items.length-1 == index) {  console.log('Reached last sentence!')};
+          if (this.state.items.length-1 === index) {  console.log('Reached last sentence!')};
         }
       }
       // alert("last word");
     };
   },
   play_sentence:function(index){
-    if (index==NaN) {throw 'params index error in play_sentence().'};
+    if (index===NaN) {throw 'params index error in play_sentence().'};
     // var item= this.getEnglishList()[index];
     let item= srtArray[index];
     if(item){
@@ -166,7 +166,7 @@ var SRTApp= React.createClass({
       current_media.filenames[current_media.filename_index].index = index;
       arr_index.push(index); arr_index.shift(); 
       // console.log(arr_index)
-      if( arr_index[0] != arr_index[1] ){
+      if( arr_index[0] !== arr_index[1] ){
         fs.writeFile('media.json', JSON.stringify(G_media), (err)=>{
           if (err) {throw new Error(err)}
             else
@@ -180,7 +180,7 @@ var SRTApp= React.createClass({
       let start = item.startTime/1000, end = item.endTime/1000
       console.log('start,end',start,end)
       MediaPlayer(start, end); 
-      if (this.state.current_index == this.state.items.length-1) { console.log('play last sentence!')}
+      if (this.state.current_index === this.state.items.length-1) { console.log('play last sentence!')}
 
     }
   },
@@ -317,8 +317,8 @@ var SRTApp= React.createClass({
   },
   render: function(){
     const styles = {
-      customWidth: { width: 100, },
-      hideBtnWidth:{ margin: 12, },
+      customWidth: { width: 100 },
+      hideBtnWidth:{ margin: 12 },
       root: {
           display: 'flex',
           flexWrap: 'wrap',
@@ -376,7 +376,7 @@ var SRTApp= React.createClass({
                                 onRequestClose={this.handleSubMovieDialogClose}
                               >
                               {video.filenames.map((filename, filename_index)=>{
-                                let is_current_filename = (filename_index == video.filename_index) //是否是当前媒体文件，这样选择的时候会比较方便
+                                let is_current_filename = (filename_index === video.filename_index) //是否是当前媒体文件，这样选择的时候会比较方便
                                 return <RaisedButton key={filename_index}
                                   primary={ is_current_filename }
                                   label={ filename.name }
@@ -458,11 +458,11 @@ var srtrendered = ReactDOM.render(<SRTApp />, document.getElementById('srtapp_co
 $(window).keydown(function(e){
   var focused = $('input').is(':focus');
   if (!focused) {
-    if (e.keyCode == 37) { srtrendered.prev_sentence()}; //left
-    if (e.keyCode == 39) { srtrendered.next_sentence()}; //right
-    if (e.keyCode == 13) { srtrendered.play_current()  };
+    if (e.keyCode === 37) { srtrendered.prev_sentence()}; //left
+    if (e.keyCode ===39) { srtrendered.next_sentence()}; //right
+    if (e.keyCode === 13) { srtrendered.play_current()  };
   }else{
-    if (e.keyCode == 114) { console.log('help')};
+    if (e.keyCode === 114) { console.log('help')};
   };
 })
 
