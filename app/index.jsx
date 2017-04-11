@@ -66,9 +66,10 @@ function set_current_media(media_index, filename_index){
     throw new Error(`can't find ${mpFileName} or ${srtFileName}`);
   }
 
+  // 像这儿吧，代码大全会告诉你，给这个判断起个名字，不然以后你都不知道这儿是干什么的，比如2017.4.11的现在！
   if ( Number(G_media.media_index) !== Number(media_index) )  { //加入Number以免以后出现啥问题
     G_media.media_index = media_index
-    fs.writeFile('media.json', JSON.stringify(G_media,null,"\t") ,(err)=>{
+    fs.writeFile('media.json', JSON.stringify(G_media,null, 4) ,(err)=>{
       if (err) {throw new Error(err)}
         else
       {
@@ -167,7 +168,7 @@ var SRTApp= React.createClass({
       arr_index.push(index); arr_index.shift(); 
       // console.log(arr_index)
       if( arr_index[0] !== arr_index[1] ){
-        fs.writeFile('media.json', JSON.stringify(G_media), (err)=>{
+        fs.writeFile('media.json', JSON.stringify(G_media,null, '\t'), (err)=>{
           if (err) {throw new Error(err)}
             else
           {
