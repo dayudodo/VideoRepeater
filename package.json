@@ -49,21 +49,20 @@
     "jquery": "^1.11.3",
     "less-loader": "^2.2.3",
     "material-ui": "latest",
-    "react": "^15.1.0",
-    "react-dom": "^15.1.0",
-    "react-tap-event-plugin": "2.0.1",
     "srt": "0.0.3",
     "style-loader": "^0.13.1",
     "webpack": "latest",
     "webpack-dev-server": "latest"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "babel-preset-stage-1": "^6.5.0",
     "nconf": "^0.8.4",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.4.1",
+    "react-tap-event-plugin": "2.0.1",
     "redux": "^3.5.2"
   }
 }

@@ -17,6 +17,9 @@ var CurrentSentence = React.createClass({
 		e.preventDefault();
 		this.props.next_sentence();
 	},
+	sen_pictures:function(sen){
+		this.props.sen_pictures(sen)
+	},
 	handleClick:function(e){
 		e.preventDefault();
 		this.props.currentSentenceClick();
@@ -33,6 +36,7 @@ var CurrentSentence = React.createClass({
 				    </div>
 				    <button className="btn btn-info btn-sm" onClick={ this.prev_sentence } >上句</button>
 				    <button className="btn btn-info btn-sm" onClick={ this.next_sentence } >下句</button>
+				    <button className="btn btn-info btn-sm" onClick={ this.sen_pictures.bind(null, english) } id="sen_pictures">图片</button>
 				</div>
 	},
 });

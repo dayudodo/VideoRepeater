@@ -31,9 +31,6 @@ npm run build
 npm run start
 ```
 
-## todo
-- [ ]不再使用material-ui, 简简单单的bootstrap就好
-
 
 The MIT License
-Copyright (c) 2016 Adam Lu
+Copyright (c) 2017 Adam Lu

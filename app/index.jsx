@@ -30,11 +30,13 @@ import Timer   from './timer' //一引用就可以在界面中显示出时间段
 import CurrentSentence  from './currentSentence'
 import EnglishList   from './EnglishList'
 import TableEnglishList from './TableEnglishList';
+import PictureList from './PictureList'
 // var {TableEnglishList} = require('./TableEnglishList'); //类的办法似乎需要使用import才能够正常的使用，es6的就按照es6的来。
 
 const fs = global.require('fs'); //如果直接使用require，可能使用的是windows.require。
 // import fs from 'fs'
 let srt = require("srt").fromString;
+import axios from 'axios'
 
 let srtArray;
 let current_media;
@@ -119,7 +121,9 @@ var SRTApp= React.createClass({
       , autoContinue: false
       , showChinese: false
       , repeat_times: 1
-      , play_back_rate: 1 };
+      , play_back_rate: 1 
+      , pics_sources: [] 
+     }
   },
   onSearchChange: function(e) {
     this.setState({text: e.target.value});
@@ -167,17 +171,18 @@ var SRTApp= React.createClass({
       current_media.filenames[current_media.filename_index].index = index;
       arr_index.push(index); arr_index.shift(); 
       // console.log(arr_index)
-      if( arr_index[0] !== arr_index[1] ){
+      var is_not_previous_index = arr_index[0] !== arr_index[1]
+      if( is_not_previous_index ){
         fs.writeFile('media.json', JSON.stringify(G_media,null, '\t'), (err)=>{
           if (err) {throw new Error(err)}
-            else
-          {
-            // console.log('ok')
-          }
         });
       }
-      // item.click(); 
+
       this.setState({current_sentence: item});  //更新当然句子的显示，
+      //更新句子的图片
+      // $('#sen_pictures').click()
+      this.sen_pictures(item.english)
+      
       let start = item.startTime/1000, end = item.endTime/1000
       console.log('start,end',start,end)
       MediaPlayer(start, end); 
@@ -313,6 +318,24 @@ var SRTApp= React.createClass({
     //在改变完文件名后还需要做些其它事情，比如显示当前需要播放的媒体文件名称
     $('#title').html(G_media.video[index].filenames[filename_index].medianame)
   },
+  sen_pictures:function(sen){
+    var param = $.param({sen: sen})
+    var url = `http://localhost:3000/sentences/freesearch.json?${param}`
+    // console.log(url)
+    // $.getJSON(url, (response)=>{
+    //   console.dir(response.pic_infos)
+    //   // this.sen_pictures = response.pic_infos
+    //   this.setState({pics_sources: response.pic_infos})
+    // })
+    axios.get(url)
+      .then((response)=>{
+        this.setState({pics_sources: response.data.pic_infos})
+      })
+      .catch((e)=>{
+        this.setState( {pics_sources: []} )
+      })
+
+  },
   componentDidMount:function(){ //载入完成后开始播放，加入时间用来读取媒体文件
     // this.play_current(); //有点儿问题，如果不播放反倒正常一些。
   },
@@ -440,8 +463,9 @@ var SRTApp= React.createClass({
               currentSentenceClick={this.play_current} 
               items={this.state.items}
               current_index={this.state.current_index}
+              sen_pictures={this.sen_pictures}
             />
-            
+            <PictureList pics_sources = {this.state.pics_sources} />
             <EnglishList items={this.state.items} 
                         ref="english_list" 
                         change_current_sentence={ this.change_current_sentence }

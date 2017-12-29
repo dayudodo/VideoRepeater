@@ -16,3 +16,7 @@
 body{
 	background: #286090
 }
+.pictures_list img{
+	max-width: 300px;
+	max-height: 300px;
+}
