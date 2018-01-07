@@ -120,6 +120,7 @@ var SRTApp= React.createClass({
       , subMovieOpen: false
       , autoContinue: false
       , showChinese: false
+      , showEnglish: true
       , repeat_times: 1
       , play_back_rate: 1 
       , pics_sources: [] 
@@ -248,6 +249,9 @@ var SRTApp= React.createClass({
     })
     this.setState({items: newSrtArray});
   },
+  hideOrShowEnglish(e) {
+    this.setState({showEnglish: !this.state.showEnglish})
+  },
   hideOrShowAll:function(e){
     e.preventDefault()
     this.hideOrShowSubtitle(e)
@@ -321,12 +325,7 @@ var SRTApp= React.createClass({
   sen_pictures:function(sen){
     var param = $.param({sen: sen})
     var url = `http://localhost:3000/sentences/freesearch.json?${param}`
-    // console.log(url)
-    // $.getJSON(url, (response)=>{
-    //   console.dir(response.pic_infos)
-    //   // this.sen_pictures = response.pic_infos
-    //   this.setState({pics_sources: response.pic_infos})
-    // })
+
     axios.get(url)
       .then((response)=>{
         this.setState({pics_sources: response.data.pic_infos})
@@ -336,6 +335,7 @@ var SRTApp= React.createClass({
       })
 
   },
+
   componentDidMount:function(){ //载入完成后开始播放，加入时间用来读取媒体文件
     // this.play_current(); //有点儿问题，如果不播放反倒正常一些。
   },
@@ -450,6 +450,7 @@ var SRTApp= React.createClass({
                   <label>播放速度：</label>
                     { playRate }
                   <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
+                  <RaisedButton label={ this.state.showEnglish? '隐藏英文': '显示英文'} onClick={ this.hideOrShowEnglish } style={ styles.hideBtnWidth }/>
                   <RaisedButton label={ this.state.showChinese? '英文': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
                 </form>
 
@@ -464,6 +465,7 @@ var SRTApp= React.createClass({
               items={this.state.items}
               current_index={this.state.current_index}
               sen_pictures={this.sen_pictures}
+              showEnglish={this.state.showEnglish}
             />
             <PictureList pics_sources = {this.state.pics_sources} />
             <EnglishList items={this.state.items} 

@@ -25,14 +25,14 @@ var CurrentSentence = React.createClass({
 		this.props.currentSentenceClick();
 	},
 	render() {
-		const {items, current_index, currentSentenceClick} = this.props;
+		const {items, current_index, currentSentenceClick, showEnglish} = this.props;
 		const current_sentence=items[current_index]
 		const english= current_sentence? current_sentence.english: ''
 		const isLastSentence = current_index === (Number(items.length)-1)
 		const current_sentence_style = "col-md-10 col-lg-10 alert "+ (isLastSentence? 'alert-warning':'alert-success')
 		return  <div className="col-sm-12 col-md-12 col-lg-12">
 				    <div className={current_sentence_style} onClick={ currentSentenceClick } id="current_sentence">
-				      { english }
+				      { showEnglish? english : '' }
 				    </div>
 				    <button className="btn btn-info btn-sm" onClick={ this.prev_sentence } >上句</button>
 				    <button className="btn btn-info btn-sm" onClick={ this.next_sentence } >下句</button>

@@ -8,18 +8,20 @@ var PictureList = React.createClass({
 
 
 	render() {
-		const { pics_sources }= this.props
+		const { pics_sources } = this.props
 		// console.dir(this.props.pics_sources)
 		const host = 'http://localhost:3000'
-		return  <div className="col-sm-12 col-md-12 col-lg-12 pictures_list">
-							{
-								pics_sources? 
-								pics_sources.map((pic,index)=>{
-									return <img src={`${host}/pictures/${pic.pictures[0].filename}`} key={`pic${index}`}/>
-
-								}) : null
-							}
-						</div>
+		return <div className="col-sm-12 col-md-12 col-lg-12 pictures_list">
+			{
+				pics_sources ?
+					pics_sources.map((pic, index) => {
+						let rand = Math.floor(Math.random() * pic.pictures.length)
+						let pic_source = encodeURI(`${host}/pictures/${pic.pictures[rand].filename}`)
+						console.log(pic_source)
+						return <img src={pic_source} key={`pic${index}`} />
+					}) : null
+			}
+		</div>
 	},
 });
 
