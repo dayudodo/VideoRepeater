@@ -26,7 +26,7 @@ var ListItem = ({ onClick, item, index })=>{
 
 module.exports = React.createClass({
 	componentDidMount(){
-		console.log('did mount EnglishList');
+		console.log(' EnglishList DidMount');
 	},
 	shouldComponentUpdate(nextProps, nextState){
 		// return false;

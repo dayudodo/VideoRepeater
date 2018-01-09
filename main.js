@@ -11,7 +11,11 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1366, height: 768})
+  var screenElectron = electron.screen;
+  var mainScreen = screenElectron.getPrimaryDisplay();
+  // var allScreens = screenElectron.getAllDisplays();
+  var displaySize = mainScreen.size
+  mainWindow = new BrowserWindow({ width: displaySize.width, height: displaySize.height})
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`)
