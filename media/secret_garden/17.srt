@@ -660,7 +660,7 @@ like a king does when he goes to a new place."
 
 166
 00:13:05,896 --> 00:13:09,288
-Colin placed the rose in the hole in the ground.
+Colin placed the rose in the hole on the ground.
 
 167
 00:13:09,288 --> 00:13:12,630

@@ -14,9 +14,12 @@
 	padding: 5px;
 }
 body{
-	background: #286090
+	background:rgba(40, 96, 144, 0.68)
 }
 .pictures_list img{
-	max-width: 300px;
-	max-height: 300px;
+	max-width: 2500px;
+	max-height: 250px;
+	border-radius: 20px;
+	box-shadow: 1px 1px 10px #444;
+	margin: 2px;
 }
