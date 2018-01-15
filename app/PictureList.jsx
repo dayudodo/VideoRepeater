@@ -17,7 +17,7 @@ var PictureList = React.createClass({
 					pics_sources.map((pic, index) => {
 						let rand = Math.floor(Math.random() * pic.pictures.length)
 						let pic_source = encodeURI(`${host}/pictures/${pic.pictures[rand].filename}`)
-						console.log(pic_source)
+						// console.log(pic_source)
 						return <img src={pic_source} key={`pic${index}`} />
 					}) : null
 			}

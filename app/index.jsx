@@ -179,10 +179,10 @@ var SRTApp= React.createClass({
         });
       }
 
-      this.setState({current_sentence: item});  //更新当然句子的显示，
-      //更新句子的图片
-      // $('#sen_pictures').click()
-      this.sen_pictures(item.english)
+      this.setState({current_sentence: item}, function(){
+        //更新句子的图片，需要在当前句子改变之后进行。
+        $("#sen_pictures").click();
+      });  //更新当然句子的显示，
       
       let start = item.startTime/1000, end = item.endTime/1000
       console.log('start,end',start,end)
@@ -325,7 +325,7 @@ var SRTApp= React.createClass({
   sen_pictures:function(sen){
     var param = $.param({sen: sen})
     var url = `http://localhost:3000/sentences/freesearch.json?${param}`
-
+    console.log(url)
     axios.get(url)
       .then((response)=>{
         this.setState({pics_sources: response.data.pic_infos})
@@ -372,7 +372,7 @@ var SRTApp= React.createClass({
                                <MenuItem value={2} primaryText="2" />
                                <MenuItem value={3} primaryText="3" />
                               </SelectField>
-    const playRate =  <SelectField
+    const playRateSelect =  <SelectField
                          value={this.state.play_back_rate}
                          onChange={this.handlePlayBackRate}
                          style={styles.customWidth} >
@@ -448,7 +448,7 @@ var SRTApp= React.createClass({
                   <label>重复次数：</label>
                     { repeatTimesSelect }
                   <label>播放速度：</label>
-                    { playRate }
+                    { playRateSelect }
                   <RaisedButton label={ this.state.hideSubtitle? '显示字幕': '隐藏字幕'} onClick={ this.hideOrShowSubtitle } style={ styles.hideBtnWidth }/>
                   <RaisedButton label={ this.state.showEnglish? '隐藏英文': '显示英文'} onClick={ this.hideOrShowEnglish } style={ styles.hideBtnWidth }/>
                   <RaisedButton label={ this.state.showChinese? '英文': '中文'} onClick={ this.hideOrShowChinese } style={ styles.hideBtnWidth }/>
