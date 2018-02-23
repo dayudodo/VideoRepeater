@@ -107,6 +107,13 @@ var SRTApp= React.createClass({
     var mpfile_index = current_media.filename_index //每几个媒体文件，电影里面可能会有好几段视频，统一作为数组处理，
     var sentence_index = current_media.filenames[mpfile_index].index  //当前媒体文件中每几个index
 
+    let show_current_medianame=function(){
+      let media_showname = current_media.filenames[current_media.filename_index].name
+      let name = current_media.description + media_showname
+      $('#title').html(name)
+    }
+    show_current_medianame()
+
     return {
         items: srtArray
       , text: ''
@@ -296,6 +303,8 @@ var SRTApp= React.createClass({
       , current_sentence: srtArray[mpfile_index]
     });
     this.handleClose();
+    //因为是电影，只有一个文件，所以也需要去改变媒体文件名称！
+    this.after_change_filename(index, current_media.filename_index)
   },
   handleSubMovieDialog:function(){
     console.log("popup a dialog to select sub movie");
@@ -319,8 +328,11 @@ var SRTApp= React.createClass({
     this.after_change_filename(index, filename_index);
   },
   after_change_filename:function(index, filename_index){
-    //在改变完文件名后还需要做些其它事情，比如显示当前需要播放的媒体文件名称
-    $('#title').html(G_media.video[index].filenames[filename_index].medianame)
+    //在改变完文件名后还需要做些其它事情，比如显示当前需要播放的媒体文件名称，一开始也是需要加载媒体名称的！因为可能有保存好的历史数据！
+    let name = G_media.video[index].description
+    let media_showname = G_media.video[index].filenames[filename_index].name;
+    console.log("name:", name);
+    $('#title').html(name + media_showname);
   },
   sen_pictures:function(sen){
     var param = $.param({sen: sen})

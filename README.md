@@ -31,6 +31,8 @@ npm run build
 npm run start
 ```
 
+## todo
+[x] 一开始也是需要加载媒体名称的！因为可能有保存好的历史数据！
 
 The MIT License
 Copyright (c) 2017 Adam Lu

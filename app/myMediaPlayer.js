@@ -3,6 +3,8 @@ let G_timer;
 const freeze_at_end = true; //播放完成后，画面停在end
 let testTimestart ;
 
+//G_player需要在主程序中定义，也是个全局变量，在这儿就能够体现出命名规范的好处了！
+//这个方法坏处是不够通用，里面有太多的全局变量，耦合严重！只能作为参考
 function MediaPlayer(start,end,after_played){
 	//看来还是需要改变为全局变量，毕竟只有一个播放器，使用let貌似变量会消失？
 		// var startTime= start;
