@@ -54,7 +54,7 @@
     "webpack-dev-server": "latest"
   },
   "dependencies": {
-    "axios": "^0.17.1",
+    "axios": "^0.18.1",
     "babel-preset-stage-1": "^6.5.0",
     "electron": "^1.8.2",
     "nconf": "^0.8.4",
