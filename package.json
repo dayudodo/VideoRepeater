@@ -56,7 +56,7 @@
   "dependencies": {
     "axios": "^0.17.1",
     "babel-preset-stage-1": "^6.5.0",
-    "electron": "^1.8.2",
+    "electron": "^11.5.0",
     "nconf": "^0.8.4",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
