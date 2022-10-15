@@ -46,7 +46,7 @@
     "gulp-run": "^1.6.12",
     "gulp-util": "^3.0.7",
     "install": "^0.8.1",
-    "jquery": "3.3.1",
+    "jquery": "3.5.0",
     "less-loader": "^2.2.3",
     "material-ui": "latest",
     "srt": "0.0.3",
